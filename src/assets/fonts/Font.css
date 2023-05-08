@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "YiSunShin";
+  font-style: normal;
+  font-weight: 100;
+  src: url("./YiSunShinL.woff") format("woff");
+}
+
+@font-face {
+  font-family: "YiSunShin";
+  font-style: normal;
+  font-weight: normal;
+  src: url("./YiSunShinM.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Copperplate";
+  font-style: normal;
+  font-weight: lighter;
+  src: url("./CopperplateGothicLight.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Copperplate";
+  font-style: normal;
+  font-weight: lighter;
+  src: url("./CopperplateGothicBold.woff") format("woff");
+}

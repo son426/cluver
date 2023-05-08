@@ -1,6 +1,7 @@
 import React from "react";
 import { createGlobalStyle } from "styled-components";
 import Router from "./Router";
+import "./App.css";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
