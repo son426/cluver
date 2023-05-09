@@ -1,135 +1,114 @@
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBars,
-  faUserCheck,
-  faUsers,
-} from "@fortawesome/free-solid-svg-icons";
+import Navbar from "../../components/Navbar";
+import Bottombar from "../../components/Bottombar";
+import logo from "../../assets/images/logo.png";
 
 const Background = styled.div`
   width: 100vw;
   height: 100vh;
-  background-color: #1c1f2a;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+  background-color: ${(props) => props.theme.bgColor};
 `;
-const Header = styled.header`
-  width: 100vw;
-  height: 10vh;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 0px 30px;
-  align-items: center;
+
+const Wrap = styled.div`
+  width: 360px;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 50%;
+  transform: translateX(-50%);
+  background-color: ${(props) => props.theme.bgColor};
 `;
-const Title = styled.h1`
-  // 타이틀 폰트 이슈
-  font-size: 30px;
-  font-weight: 600;
-  background: linear-gradient(135deg, #91e09d 0%, #abc0e4 70%);
-  color: transparent;
-  -webkit-background-clip: text;
-`;
-const Navbar = styled.div`
-  height: 10vh;
-  width: 100vw;
-  position: fixed;
-  bottom: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 30px 30px;
-  align-items: center;
-`;
+
 const Container = styled.div`
-  width: 55vw;
-  height: 50vh;
-  margin-top: 10vh;
+  width: 100%;
+  height: 77%;
+  transform: translateY(12%);
+  //background-color: red;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
-const Clover = styled.div`
-  font-size: 90px;
-  background: linear-gradient(135deg, #91e09d 0%, #abc0e4 70%);
-  color: transparent;
-  -webkit-background-clip: text;
-  //겹침 이슈
-  /* position: absolute; */
+const Logo = styled.img`
+  width: 150px;
 `;
-const WhiteTitle = styled.div`
-  // 타이틀 폰트 이슈
-  font-size: 30px;
-  font-weight: 600;
-  color: white;
-  /* position: absolute; */
+const InputWrapper = styled.div`
+  //gradient input box
+  width: 60%;
+  margin-bottom: 7px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  background-image: linear-gradient(
+      ${(props) => props.theme.bgColor},
+      ${(props) => props.theme.bgColor}
+    ),
+    ${(props) => props.theme.gradient};
 `;
 const Input = styled.input`
-  background-color: transparent;
-  border: 1px solid #5b6579;
-  border-radius: 7px;
   width: 100%;
-  padding: 7px;
-  margin-bottom: 7px;
+  padding: 6px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: ${(props) => props.theme.formColor};
+  text-align: center;
+  ::placeholder {
+    color: ${(props) => props.theme.formColor};
+    font-size: 12px;
+    text-align: center;
+  }
 `;
 const Button = styled.button`
-  width: 100%;
-  padding: 5px;
+  width: 60%;
+  padding: 6px;
   margin-bottom: 15px;
   font-weight: 600;
   border-radius: 7px;
   border-color: transparent;
-  background: linear-gradient(135deg, #91e09d 0%, #abc0e4 70%);
+  background: ${(props) => props.theme.gradient};
 `;
-const Text = styled.span`
-  color: white;
-  font-size: 10px;
+const TextWrapper = styled.div`
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  & {
+    color: ${(props) => props.theme.iconColor};
+    font-size: 10px;
+  }
+`;
+const Text = styled.div`
+  :hover {
+    color: ${(props) => props.theme.accentColor};
+  }
 `;
 
 function Login() {
   return (
     <Background>
-      <Header>
-        <Title>♣</Title>
-        <Title>CLUVER</Title>
-        <FontAwesomeIcon
-          // 아이콘 그라데이션 이슈
-          icon={faBars}
-          size="lg"
-          style={{
-            background: "linear-gradient(135deg, #91e09d 0%, #abc0e4 70%)",
-            color: "transparent",
-            backgroundClip: "text",
-          }}
-        />
-      </Header>
-      <Container>
-        <Clover>♣</Clover>
-        <WhiteTitle>CLUVER</WhiteTitle>
-        <Text>FOR CLUB LEADER</Text>
-        <Input placeholder="아이디"></Input>
-        <Input placeholder="비밀번호"></Input>
-        <Button>로그인</Button>
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-around",
-          }}
-        >
-          <Text>아이디 찾기</Text>
-          <Text>|</Text>
-          <Text>비밀번호 초기화</Text>
-        </div>
-      </Container>
-      <Navbar>
-        <FontAwesomeIcon icon={faUserCheck} size="xl" color="white" />
-        <FontAwesomeIcon icon={faUsers} size="xl" color="white" />
-        <Title style={{ color: "white", transform: "scaleY(-1)" }}>♣</Title>
-      </Navbar>
+      <Wrap>
+        <Navbar></Navbar>
+        <Container>
+          <Logo src={logo} />
+          <InputWrapper>
+            <Input placeholder="아이디"></Input>
+          </InputWrapper>
+          <InputWrapper>
+            <Input placeholder="비밀번호"></Input>
+          </InputWrapper>
+          <Button onClick={() => alert("로그인")}>로그인</Button>
+          <TextWrapper>
+            <Text onClick={() => alert("아이디 찾기")}>아이디 찾기</Text>
+            <span>|</span>
+            <Text onClick={() => alert("비밀번호 초기화")}>
+              비밀번호 초기화
+            </Text>
+          </TextWrapper>
+        </Container>
+        <Bottombar></Bottombar>
+      </Wrap>
     </Background>
   );
 }
