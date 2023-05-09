@@ -1,6 +1,7 @@
 import React from "react";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 import Router from "./Router";
+import { darkTheme } from "./util/theme";
 import "./App.css";
 
 const GlobalStyle = createGlobalStyle`
@@ -66,8 +67,10 @@ const GlobalStyle = createGlobalStyle`
 function App() {
   return (
     <>
-      <Router />
-      <GlobalStyle />
+      <ThemeProvider theme={darkTheme}>
+        <Router />
+        <GlobalStyle />
+      </ThemeProvider>
     </>
   );
 }

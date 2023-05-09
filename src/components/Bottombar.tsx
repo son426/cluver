@@ -9,7 +9,7 @@ const Container = styled.div`
   //background-color: grey;
   display: flex;
   justify-content: center;
-  font-family: "YiSunShin";
+  font-family: ${(props) => props.theme.textFont};
 `;
 
 const IconDiv = styled.div`
@@ -31,7 +31,7 @@ const Icon = styled.span`
   width: 45px;
   //background-color: blue;
   text-align: center;
-  font-family: "Copperplate";
+  font-family: ${(props) => props.theme.titleFont};
 `;
 
 const TextDiv = styled.div`

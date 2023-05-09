@@ -15,7 +15,7 @@ const Wrap = styled.div`
 const Bg = styled.div`
   width: 100%;
   height: 100vh;
-  background-color: #1c1f2a;
+  background-color: ${(props) => props.theme.bgColor};
 `;
 
 function Main() {
