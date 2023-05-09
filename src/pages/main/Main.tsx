@@ -24,7 +24,13 @@ function Main() {
       <Wrap>
         <Bg>
           <Navbar></Navbar>
-          <Bottombar></Bottombar>
+          <Bottombar
+            first={false}
+            second={false}
+            third={false}
+            fourth={false}
+            fifth={true}
+          />
         </Bg>
       </Wrap>
     </>
