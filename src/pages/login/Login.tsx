@@ -2,11 +2,12 @@ import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import logo from "../../assets/images/logo.png";
+import { useState } from "react";
 
 const Background = styled.div`
   width: 100vw;
   height: 100vh;
-  background-color: ${(props) => props.theme.bgColor};
+  //background-color: ${(props) => props.theme.bgColor};
 `;
 
 const Wrap = styled.div`
@@ -27,15 +28,17 @@ const Container = styled.div`
   //background-color: red;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  //justify-content: center;
   align-items: center;
 `;
 const Logo = styled.img`
   width: 150px;
+  margin-top: 120px;
+  margin-bottom: 5px;
 `;
 const InputWrapper = styled.div`
   //gradient input box
-  width: 60%;
+  width: 100%;
   margin-bottom: 7px;
   border: 1px solid transparent;
   border-radius: 7px;
@@ -46,6 +49,9 @@ const InputWrapper = styled.div`
       ${(props) => props.theme.bgColor}
     ),
     ${(props) => props.theme.gradient};
+`;
+const Form = styled.form`
+  width: 60%;
 `;
 const Input = styled.input`
   width: 100%;
@@ -59,9 +65,12 @@ const Input = styled.input`
     font-size: 12px;
     text-align: center;
   }
+  :focus {
+    outline: none;
+  }
 `;
 const Button = styled.button`
-  width: 60%;
+  width: 100%;
   padding: 6px;
   margin-bottom: 15px;
   font-weight: 600;
@@ -82,23 +91,45 @@ const TextWrapper = styled.div`
 const Text = styled.div`
   :hover {
     color: ${(props) => props.theme.accentColor};
+    transition: all ease 0.3s;
   }
 `;
 
 function Login() {
+  const [id, setId] = useState("");
+  const [password, setPassword] = useState("");
+  const onChangeId = (e: React.FormEvent<HTMLInputElement>) => {
+    setId(e.currentTarget.value);
+  };
+  const onChangePw = (e: React.FormEvent<HTMLInputElement>) => {
+    setPassword(e.currentTarget.value);
+  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {};
   return (
     <Background>
       <Wrap>
         <Navbar></Navbar>
         <Container>
           <Logo src={logo} />
-          <InputWrapper>
-            <Input placeholder="아이디"></Input>
-          </InputWrapper>
-          <InputWrapper>
-            <Input placeholder="비밀번호"></Input>
-          </InputWrapper>
-          <Button onClick={() => alert("로그인")}>로그인</Button>
+          <Form onSubmit={onSubmit}>
+            <InputWrapper>
+              <Input
+                type="text"
+                placeholder="아이디"
+                value={id}
+                onChange={onChangeId}
+              ></Input>
+            </InputWrapper>
+            <InputWrapper>
+              <Input
+                type="password"
+                placeholder="비밀번호"
+                value={password}
+                onChange={onChangePw}
+              ></Input>
+            </InputWrapper>
+            <Button type="submit">로그인</Button>
+          </Form>
           <TextWrapper>
             <Text onClick={() => alert("아이디 찾기")}>아이디 찾기</Text>
             <span>|</span>
