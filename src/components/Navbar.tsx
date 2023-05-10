@@ -14,16 +14,13 @@ const Container = styled.div`
 const Cluver = styled.div`
   width: fit-content;
   position: absolute;
-  display: inline-block;
   font-size: 28px;
-  font-family: "Copperplate";
+  font-family: ${(props) => props.theme.titleFont};
   font-weight: bold;
-  top: 0;
   left: 50%;
-  right: 50%;
   transform: translateX(-50%);
   margin-top: 20px;
-  background: linear-gradient(135deg, #91e09d 0%, #abc0e4 70%);
+  background: ${(props) => props.theme.gradient};
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -32,14 +29,12 @@ const Cluver = styled.div`
 const Leftdiv = styled.div`
   width: fit-content;
   position: absolute;
-  display: inline-block;
   font-size: 25px;
-  font-family: "Copperplate";
+  font-family: ${(props) => props.theme.titleFont};
   font-weight: bold;
-  top: 0;
   left: 25px;
   margin-top: 20px;
-  background: linear-gradient(135deg, #91e09d 0%, #abc0e4 70%);
+  background: ${(props) => props.theme.gradient};
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -48,14 +43,12 @@ const Leftdiv = styled.div`
 const MenuDiv = styled.div`
   width: fit-content;
   position: absolute;
-  display: inline-block;
   font-size: 25px;
-  font-family: "Copperplate";
+  font-family: ${(props) => props.theme.titleFont};
   font-weight: bold;
-  top: 0;
   right: 25px;
   margin-top: 17.5px;
-  background: linear-gradient(135deg, #91e09d 0%, #abc0e4 70%);
+  background: ${(props) => props.theme.gradient};
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
