@@ -1,9 +1,8 @@
 import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
-import logo from "../../assets/images/logo.png";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import Card from "../../components/Card";
 
 const Background = styled.div`
   width: 100vw;
@@ -32,11 +31,6 @@ const Container = styled.div`
   //justify-content: center;
   align-items: center;
 `;
-const Logo = styled.img`
-  width: 150px;
-  margin-top: 120px;
-  margin-bottom: 5px;
-`;
 const InputWrapper = styled.div`
   //gradient input box
   width: 100%;
@@ -50,9 +44,6 @@ const InputWrapper = styled.div`
       ${(props) => props.theme.bgColor}
     ),
     ${(props) => props.theme.gradient};
-`;
-const Form = styled.form`
-  width: 60%;
 `;
 const Input = styled.input`
   width: 100%;
@@ -97,45 +88,18 @@ const Text = styled.div`
 `;
 
 function Login() {
-  const navigate = useNavigate();
-  const [id, setId] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const onChangeId = (e: React.FormEvent<HTMLInputElement>) => {
-    setId(e.currentTarget.value);
-  };
-  const onChangePw = (e: React.FormEvent<HTMLInputElement>) => {
-    setPassword(e.currentTarget.value);
-  };
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    //valid 확인
-    navigate("/admin");
-  };
+  //예시 데이터
+  const data = { name: "손채환", list: ["Homebrew", "aloha"] };
   return (
     <Background>
       <Wrap>
         <Navbar></Navbar>
         <Container>
-          <Logo src={logo} />
-          <Form onSubmit={onSubmit}>
-            <InputWrapper>
-              <Input
-                type="text"
-                placeholder="아이디"
-                value={id}
-                onChange={onChangeId}
-              ></Input>
-            </InputWrapper>
-            <InputWrapper>
-              <Input
-                type="password"
-                placeholder="비밀번호"
-                value={password}
-                onChange={onChangePw}
-              ></Input>
-            </InputWrapper>
-            <Button type="submit">로그인</Button>
-          </Form>
+          <span>${data.name}</span>
+          <span>님이 관리 중인 동아리입니다.</span>
+          {data.list.map((club) => (
+            <Card></Card>
+          ))}
           <TextWrapper>
             <Text onClick={() => alert("아이디 찾기")}>아이디 찾기</Text>
             <span>|</span>
@@ -143,12 +107,14 @@ function Login() {
               비밀번호 초기화
             </Text>
           </TextWrapper>
+          <span>관리 중인 동아리 추가하기 +</span>
+          <Text>동아리 삭제하기</Text>
         </Container>
         <Bottombar
           first={false}
           second={false}
           third={false}
-          fourth={false}
+          fourth={true}
           fifth={false}
         />
       </Wrap>

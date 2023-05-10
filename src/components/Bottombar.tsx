@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -9,7 +10,7 @@ const Container = styled.div`
   //background-color: grey;
   display: flex;
   justify-content: center;
-  font-family: "YiSunShin";
+  font-family: ${(props) => props.theme.textFont};
 `;
 
 const IconDiv = styled.div`
@@ -24,21 +25,23 @@ const IconDiv = styled.div`
   padding: 0 15px;
 `;
 
-const Icon = styled.span`
+const Icon = styled.span<{ isActive: boolean }>`
   height: 45px;
   color: white;
   font-size: 30px;
   width: 45px;
-  //background-color: blue;
+  background: ${(props) =>
+    props.isActive ? props.theme.gradient : props.theme.bgColor};
+  border-radius: 7px;
   text-align: center;
-  font-family: "Copperplate";
+  font-family: ${(props) => props.theme.titleFont};
 `;
 
 const TextDiv = styled.div`
   width: 100%;
   height: 15px;
   position: absolute;
-  bottom: 30px;
+  bottom: 28px;
   //background-color: green;
   display: flex;
   justify-content: space-evenly;
@@ -54,12 +57,19 @@ const Text = styled.span`
   text-align: center;
 `;
 
-function Bottombar() {
+interface IBarProps {
+  first: boolean;
+  second: boolean;
+  third: boolean;
+  fourth: boolean;
+  fifth: boolean;
+}
+function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
   return (
     <>
       <Container>
         <IconDiv>
-          <Icon>
+          <Icon isActive={first}>
             <span
               className="material-symbols-outlined"
               style={{
@@ -72,7 +82,7 @@ function Bottombar() {
               how_to_reg
             </span>
           </Icon>
-          <Icon>
+          <Icon isActive={second}>
             <span
               className="material-symbols-outlined"
               style={{
@@ -84,7 +94,7 @@ function Bottombar() {
               schedule
             </span>
           </Icon>
-          <Icon>
+          <Icon isActive={third}>
             <span
               className="material-symbols-outlined"
               style={{
@@ -96,7 +106,7 @@ function Bottombar() {
               groups
             </span>
           </Icon>
-          <Icon>
+          <Icon isActive={fourth}>
             <span
               className="material-symbols-outlined"
               style={{
@@ -109,6 +119,7 @@ function Bottombar() {
             </span>
           </Icon>
           <Icon
+            isActive={fifth}
             style={{
               fontSize: "28px",
               lineHeight: "152%",
