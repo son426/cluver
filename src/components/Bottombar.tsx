@@ -17,7 +17,7 @@ const IconDiv = styled.div`
   width: 100%;
   height: 45px;
   position: absolute;
-  top: 5px;
+  top: 3px;
   //background-color: rgba(50, 50, 50, 0.5);
   display: flex;
   justify-content: space-evenly;
