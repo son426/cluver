@@ -5,6 +5,8 @@ import logo from "../../assets/images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginValidate } from "../../util/api";
+import { useRecoilState } from "recoil";
+import { IClub, manager } from "../../util/atoms";
 
 const Background = styled.div`
   width: 100vw;
@@ -110,6 +112,8 @@ function Login() {
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  const [managerInfo, setManagerInfo] = useRecoilState(manager);
+
   const onChangeId = (e: React.FormEvent<HTMLInputElement>) => {
     setId(e.currentTarget.value);
   };
@@ -123,7 +127,19 @@ function Login() {
       setLoading(true);
       const response = await loginValidate(id, password);
       if (response.status === 201) {
-        console.log(response.data.manager);
+        const info = response.data.manager;
+        //set manager info
+        let clubs = [] as IClub[];
+        info.clubs.map((club: any, i: number) => {
+          clubs.push({
+            id: club.id,
+            name: club.name,
+            description: club.description,
+            img: club.img,
+            status: club.status,
+          });
+        });
+        setManagerInfo({ name: info.manager_name, clubs: clubs });
         navigate("/admin");
       } else {
         console.log("error: ", response);

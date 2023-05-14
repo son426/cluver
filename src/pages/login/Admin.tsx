@@ -91,6 +91,7 @@ function Login() {
       { name: "aloha", desc: "우주최강 알고리즘 동라리", isPrivate: "true" },
     ],
   };
+
   const onAddClub = async () => {
     const response = await tokenValidate(localStorage.getItem("token"));
     if (response) {
