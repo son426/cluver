@@ -96,6 +96,7 @@ function Login() {
     if (response) {
       navigate("/addclub");
     } else {
+      navigate("/login");
       console.log(response);
     }
   };
@@ -104,6 +105,7 @@ function Login() {
     if (response) {
       navigate("/delete");
     } else {
+      navigate("/login");
       console.log(response);
     }
   };

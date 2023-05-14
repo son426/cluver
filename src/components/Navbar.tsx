@@ -178,7 +178,9 @@ function Navbar() {
               setN(1);
             }}
           >
-            <span style={{ cursor: "pointer" }}>회원가입</span>
+            <Link to="/signup">
+              <span style={{ cursor: "pointer" }}>회원가입</span>
+            </Link>
           </DropMenu>
         </DropDiv>
       </Container>
