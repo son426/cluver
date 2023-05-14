@@ -12,7 +12,10 @@
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.25",
     "axios": "^1.4.0",
+<<<<<<< HEAD
+=======
     "moment": "^2.29.4",
+>>>>>>> 2af606e3d1eb01c05e4920de8781b02a986043f6
     "react": "^18.2.0",
     "react-calendar": "^4.2.1",
     "react-datepicker": "^4.11.0",
