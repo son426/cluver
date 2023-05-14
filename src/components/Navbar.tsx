@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -24,6 +26,7 @@ const Cluver = styled.div`
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  z-index: 10;
 `;
 
 const Leftdiv = styled.div`
@@ -38,6 +41,7 @@ const Leftdiv = styled.div`
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  z-index: 10;
 `;
 
 const MenuDiv = styled.div`
@@ -52,25 +56,131 @@ const MenuDiv = styled.div`
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  cursor: pointer;
+  z-index: 10;
+`;
+
+const DropDiv = styled.div`
+  width: 100%;
+  height: fit-content;
+  position: absolute;
+  top: 0;
+  background: ${(props) => props.theme.boxColor};
+  z-index: 5;
+  padding-top: 65px;
+  padding-bottom: 5px;
+  opacity: 0;
+`;
+
+const DropMenu = styled.div`
+  width: 100%;
+  height: 35px;
+  color: white;
+  font-family: ${(props) => props.theme.textFont};
+  font-size: 15px;
+  text-align: center;
+  line-height: 31px;
 `;
 
 function Navbar() {
+  const [n, setN] = useState(1);
+  const menu = useRef<any>();
+  const [text, setText] = useState("menu");
+  const clover = useRef<any>();
+
+  useEffect(() => {
+    if (n % 2 === 1) {
+      clover.current.style.opacity = "0";
+      menu.current.style.opacity = "0";
+      menu.current.style.zIndex = "-1";
+      setText("menu");
+      clover.current.style.fontSize = "35px";
+      setTimeout(() => {
+        clover.current.style.opacity = "1";
+      }, 15);
+    } else {
+      clover.current.style.opacity = "0";
+      menu.current.style.opacity = "1";
+      menu.current.style.zIndex = "5";
+      setText("♣");
+      clover.current.style.fontSize = "26px";
+      setTimeout(() => {
+        clover.current.style.opacity = "1";
+      }, 15);
+    }
+  }, [n]);
+
   return (
     <>
       <Container>
         <Leftdiv>♣</Leftdiv>
         <Cluver>CLUVER</Cluver>
-        <MenuDiv>
+        <MenuDiv
+          onClick={() => {
+            setN(n + 1);
+          }}
+        >
           <span
+            ref={clover}
             className="material-symbols-outlined"
             style={{
               fontSize: "35px",
               fontVariationSettings: "'wght' 300",
             }}
           >
-            menu
+            {text}
           </span>
         </MenuDiv>
+        <DropDiv ref={menu}>
+          <DropMenu
+            onClick={() => {
+              setN(1);
+            }}
+          >
+            <Link to="/">
+              <span style={{ cursor: "pointer" }}>서비스 이용 가이드</span>
+            </Link>
+          </DropMenu>
+          <DropMenu
+            onClick={() => {
+              setN(1);
+            }}
+          >
+            <Link to="/attendance">
+              <span style={{ cursor: "pointer" }}>출석 체크</span>
+            </Link>
+          </DropMenu>
+          <DropMenu
+            onClick={() => {
+              setN(1);
+            }}
+          >
+            <span style={{ cursor: "pointer" }}>모임 시간 조율</span>
+          </DropMenu>
+          <DropMenu
+            onClick={() => {
+              setN(1);
+            }}
+          >
+            <span style={{ cursor: "pointer" }}>그룹 관리</span>
+          </DropMenu>
+          <DropMenu
+            onClick={() => {
+              setN(1);
+            }}
+          >
+            <Link to="/login">
+              <span style={{ cursor: "pointer" }}>로그인</span>
+            </Link>
+          </DropMenu>
+          <DropMenu
+            onClick={() => {
+              setN(1);
+            }}
+          >
+            <span style={{ cursor: "pointer" }}>회원가입</span>
+          </DropMenu>
+        </DropDiv>
       </Container>
     </>
   );

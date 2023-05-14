@@ -2,6 +2,10 @@ import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import { useRef, useState, useEffect } from "react";
+import Calendar from "react-calendar";
+import "../../../node_modules/react-calendar/dist/Calendar.css";
+import moment from "moment";
+import "./Calendar.css";
 
 const Wrap = styled.div`
   width: 360px;
@@ -92,6 +96,7 @@ const InputText = styled.div`
   font-family: ${(props) => props.theme.textFont};
   margin-bottom: 10px;
   margin-top: 15px;
+  display: flex;
 `;
 
 const InputBox = styled.div`
@@ -246,6 +251,35 @@ const Bar = styled.div`
   background: ${(props) => props.theme.gradient};
 `;
 
+const PickDiv = styled.div`
+  //opacity: 0;
+  width: 220px;
+  height: 125px;
+  border: 1px solid white;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background: ${(props) => props.theme.bgColor};
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+const PickBtn = styled.div`
+  display: inline-block;
+  width: 35px;
+  height: 14px;
+  color: ${(props) => props.theme.bgColor};
+  background: white;
+  font-size: 10.5px;
+  margin-left: 10px;
+  text-align: center;
+  border-radius: 3px;
+  cursor: pointer;
+  line-height: 13px;
+`;
+
 function Attendance() {
   let arr = [
     {
@@ -349,8 +383,12 @@ function Attendance() {
   const fail = useRef<any>();
   const or = useRef<any>([]);
   const [a, setArr] = useState(arr);
+  const [date, setDate] = useState<any>();
+  const [fmDate, setFmDate] = useState(date);
+  const pick = useRef<any>();
 
   const key = "1234";
+  const today = moment().format("YYYY-MM-DD");
 
   useEffect(() => {
     if (code !== key) {
@@ -379,12 +417,28 @@ function Attendance() {
     }
   }, [birth]);
 
+  useEffect(() => {
+    let fmDate = moment(date).format("YYYY-MM-DD");
+    setFmDate(fmDate);
+    setTimeout(() => {
+      pick.current.style.opacity = "1";
+      pick.current.style.zIndex = "3";
+    }, 100);
+  }, [date]);
+
+  function checkValid() {
+    if (birth.length !== 4) {
+      alert("생일 4자리를 입력해주세요.");
+    } else {
+    }
+  }
+
   return (
     <>
       <Wrap>
         <Bg>
           <Navbar />
-          <Date>2023-05-11</Date>
+          <Date>{today}</Date>
           <Text>출석 코드를 입력하세요</Text>
           <CodeBox
             ref={(e) => {
@@ -448,6 +502,7 @@ function Attendance() {
             >
               <Input
                 type="text"
+                maxLength={4}
                 placeholder="생일 4자리"
                 onChange={(e) => {
                   setBirth(e.target.value);
@@ -643,7 +698,50 @@ function Attendance() {
               or.current[3] = e;
             }}
             style={{ opacity: "0" }}
-          ></Section>
+          >
+            <Calendar
+              className="react-calendar"
+              calendarType="US"
+              minDetail="month"
+              maxDetail="month"
+              next2Label={null}
+              prev2Label={null}
+              formatDay={(locale, date) => moment(date).format("DD")}
+              onChange={setDate}
+              value={date}
+            ></Calendar>
+            <PickDiv ref={pick}>
+              <InputText style={{ margin: "20px auto 0" }}>{fmDate}</InputText>
+              <InputText
+                style={{
+                  marginTop: "10px",
+                  marginLeft: "53px",
+                  marginBottom: "0",
+                }}
+              >
+                활동 내용 : 정기 회합
+              </InputText>
+              <InputText
+                style={{
+                  marginTop: "7px",
+                  marginLeft: "53px",
+                }}
+              >
+                출석 인원 : 12 <PickBtn>출석부</PickBtn>
+              </InputText>
+              <InputText
+                style={{
+                  margin: "2px auto",
+                }}
+                onClick={() => {
+                  pick.current.style.opacity = "0";
+                  pick.current.style.zIndex = "-3";
+                }}
+              >
+                <PickBtn>닫기</PickBtn>
+              </InputText>
+            </PickDiv>
+          </Section>
           <Bottombar
             first={true}
             second={false}

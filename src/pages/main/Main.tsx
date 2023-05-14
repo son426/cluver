@@ -1,8 +1,11 @@
+/* --save --legacy-peer-deps */
 import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import logo from "../../assets/images/logo.png";
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Wrap = styled.div`
   width: 360px;
@@ -94,6 +97,7 @@ const Res = styled.div`
   color: white;
   font-size: 12px;
   font-family: ${(props) => props.theme.textFont};
+  cursor: pointer;
 `;
 
 const ResImg = styled.div`
@@ -151,6 +155,7 @@ function Main() {
       src: "",
       about: "개발 동아리",
       lock: "lock_open_right",
+      link: "/attendance",
     },
     {
       name: "HOMEBREWWW",
@@ -158,12 +163,15 @@ function Main() {
       src: "",
       about: "괴발개발 동아리",
       lock: "lock",
+      link: "/attendance",
     },
   ];
   const search = useRef<any>(null);
   const res = useRef<any>(null);
   const [word, setWord] = useState("");
   const [a, setArr] = useState(arr);
+  //const [resAPI, getRes] = useState([]);
+  var resAPI = [];
 
   useEffect(() => {
     if (word === "") {
@@ -175,12 +183,33 @@ function Main() {
     }
   }, [word]);
 
+  /* function Api() {
+    const url = "http://172.30.1.58:8000/club";
+    axios.get(url).then(function (response) {
+      get(response.data);
+      console.log(resAPI);
+    });
+  } */
+
+  const Api = async () => {
+    try {
+      const url = "http://172.20.10.4:8000/club";
+      const response = await axios.get(url);
+      //getRes(response.data);
+      //console.log(response.data);
+      resAPI = response.data;
+      console.log(resAPI);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <Wrap>
         <Bg>
           <Navbar />
-          <Logo src={logo} />
+          <Logo src={logo} onClick={Api} />
           <Text>활동 중인 동아리를 찾아보세요</Text>
           <SearchBox ref={search}>
             <Search
@@ -206,10 +235,12 @@ function Main() {
             <ul>
               {a.map((e) => (
                 <li>
-                  <Res>
-                    <ResImg>♣</ResImg>
-                    <ResName>{e.name}</ResName>
-                    <ResAbout>{e.about}</ResAbout>
+                  <Res onClick={Api}>
+                    <Link to={e.link}>
+                      <ResImg>♣</ResImg>
+                      <ResName>{e.name}</ResName>
+                      <ResAbout>{e.about}</ResAbout>
+                    </Link>
                     <ResLock>
                       <span
                         className="material-symbols-outlined"
