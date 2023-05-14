@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -107,16 +108,18 @@ function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
             </span>
           </Icon>
           <Icon isActive={fourth}>
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: "32px",
-                lineHeight: "140%",
-                fontVariationSettings: "'FILL' 1",
-              }}
-            >
-              manage_accounts
-            </span>
+            <Link to={"/admin"}>
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  fontSize: "32px",
+                  lineHeight: "140%",
+                  fontVariationSettings: "'FILL' 1",
+                }}
+              >
+                manage_accounts
+              </span>
+            </Link>
           </Icon>
           <Icon
             isActive={fifth}

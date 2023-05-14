@@ -2,8 +2,9 @@ import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import logo from "../../assets/images/logo.png";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginValidate } from "../../util/api";
 
 const Background = styled.div`
   width: 100vw;
@@ -41,7 +42,7 @@ const InputWrapper = styled.div`
   //gradient input box
   width: 100%;
   margin-bottom: 7px;
-  border: 1px solid transparent;
+  border: 1px solid white;
   border-radius: 7px;
   background-origin: border-box;
   background-clip: content-box, border-box;
@@ -77,7 +78,8 @@ const Button = styled.button`
   font-weight: 600;
   border-radius: 7px;
   border-color: transparent;
-  background: ${(props) => props.theme.gradient};
+  background: ${(props) => props.theme.iconColor};
+  cursor: pointer;
 `;
 const TextWrapper = styled.div`
   width: 60%;
@@ -93,24 +95,62 @@ const Text = styled.div`
   :hover {
     color: ${(props) => props.theme.accentColor};
     transition: all ease 0.3s;
+    cursor: pointer;
   }
 `;
 
 function Login() {
   const navigate = useNavigate();
+
+  const idRef = useRef<any>(null);
+  const pwRef = useRef<any>(null);
+  const btnRef = useRef<any>(null);
+
+  const [loading, setLoading] = useState<boolean>(true);
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
   const onChangeId = (e: React.FormEvent<HTMLInputElement>) => {
     setId(e.currentTarget.value);
   };
   const onChangePw = (e: React.FormEvent<HTMLInputElement>) => {
     setPassword(e.currentTarget.value);
   };
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     //valid 확인
-    navigate("/admin");
+    if (id !== "" && password !== "") {
+      setLoading(true);
+      const response = await loginValidate(id, password);
+      if (response.status === 201) {
+        console.log(response.data.manager);
+        navigate("/admin");
+      } else {
+        console.log("error: ", response);
+      }
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    if (id !== "") {
+      idRef.current.style.border = "1px solid transparent";
+    } else {
+      idRef.current.style.border = "1px solid white";
+    }
+    if (password !== "") {
+      pwRef.current.style.border = "1px solid transparent";
+    } else {
+      pwRef.current.style.border = "1px solid white";
+    }
+    if (id !== "" && password !== "") {
+      btnRef.current.style.background =
+        "linear-gradient(135deg, #89ec84 0%, #abc0e4 55%, #abc0e4 83%, #c7d5ed 100%)";
+    } else {
+      btnRef.current.style.background = "white";
+    }
+  }, [id, password]);
+
   return (
     <Background>
       <Wrap>
@@ -118,7 +158,7 @@ function Login() {
         <Container>
           <Logo src={logo} />
           <Form onSubmit={onSubmit}>
-            <InputWrapper>
+            <InputWrapper ref={idRef}>
               <Input
                 type="text"
                 placeholder="아이디"
@@ -126,7 +166,7 @@ function Login() {
                 onChange={onChangeId}
               ></Input>
             </InputWrapper>
-            <InputWrapper>
+            <InputWrapper ref={pwRef}>
               <Input
                 type="password"
                 placeholder="비밀번호"
@@ -134,7 +174,9 @@ function Login() {
                 onChange={onChangePw}
               ></Input>
             </InputWrapper>
-            <Button type="submit">로그인</Button>
+            <Button ref={btnRef} type="submit">
+              로그인
+            </Button>
           </Form>
           <TextWrapper>
             <Text onClick={() => alert("아이디 찾기")}>아이디 찾기</Text>
