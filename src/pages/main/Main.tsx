@@ -6,6 +6,8 @@ import logo from "../../assets/images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { club } from "../../util/atoms";
 
 const Wrap = styled.div`
   width: 360px;
@@ -171,7 +173,9 @@ function Main() {
   const [word, setWord] = useState("");
   const [a, setArr] = useState(arr);
   //const [resAPI, getRes] = useState([]);
-  var resAPI = [];
+  var resAPI = [] as any;
+  const [ct, upCt] = useState(0);
+  const [clubRes, setClub] = useRecoilState(club);
 
   useEffect(() => {
     if (word === "") {
@@ -199,6 +203,7 @@ function Main() {
       //console.log(response.data);
       resAPI = response.data;
       console.log(resAPI);
+      upCt(ct + 1);
     } catch (err) {
       console.log(err);
     }

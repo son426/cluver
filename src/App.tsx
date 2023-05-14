@@ -3,6 +3,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import Router from "./Router";
 import { darkTheme } from "./util/theme";
 import "./App.css";
+import { RecoilRoot } from "recoil";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -67,10 +68,12 @@ const GlobalStyle = createGlobalStyle`
 function App() {
   return (
     <>
-      <ThemeProvider theme={darkTheme}>
-        <Router />
-        <GlobalStyle />
-      </ThemeProvider>
+      <RecoilRoot>
+        <ThemeProvider theme={darkTheme}>
+          <Router />
+          <GlobalStyle />
+        </ThemeProvider>
+      </RecoilRoot>
     </>
   );
 }

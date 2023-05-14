@@ -6,6 +6,8 @@ import Calendar from "react-calendar";
 import "../../../node_modules/react-calendar/dist/Calendar.css";
 import moment from "moment";
 import "./Calendar.css";
+import { useRecoilValue } from "recoil";
+import { club } from "../../util/atoms";
 
 const Wrap = styled.div`
   width: 360px;
@@ -386,6 +388,7 @@ function Attendance() {
   const [date, setDate] = useState<any>();
   const [fmDate, setFmDate] = useState(date);
   const pick = useRef<any>();
+  const clubRes = useRecoilValue(club);
 
   const key = "1234";
   const today = moment().format("YYYY-MM-DD");
