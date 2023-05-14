@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { tokenValidate } from "../util/api";
 
 const Container = styled.div`
   width: 100%;
@@ -68,6 +68,16 @@ interface IBarProps {
   fifth: boolean;
 }
 function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
+  const navigate = useNavigate();
+
+  const LinktoAdmin = async () => {
+    const response = await tokenValidate(localStorage.getItem("token"));
+    if (response) {
+      navigate("/admin");
+    } else {
+      navigate("/login");
+    }
+  };
   return (
     <>
       <Container>
@@ -111,19 +121,17 @@ function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
               groups
             </span>
           </Icon>
-          <Icon isActive={fourth}>
-            <Link to={"/admin"}>
-              <span
-                className="material-symbols-outlined"
-                style={{
-                  fontSize: "32px",
-                  lineHeight: "140%",
-                  fontVariationSettings: "'FILL' 1",
-                }}
-              >
-                manage_accounts
-              </span>
-            </Link>
+          <Icon isActive={fourth} onClick={LinktoAdmin}>
+            <span
+              className="material-symbols-outlined"
+              style={{
+                fontSize: "32px",
+                lineHeight: "140%",
+                fontVariationSettings: "'FILL' 1",
+              }}
+            >
+              manage_accounts
+            </span>
           </Icon>
           <Icon
             isActive={fifth}

@@ -85,6 +85,7 @@ function Card({ name, desc, isPrivate }: IProps) {
         state: { name: name, desc: desc, isPrivate: isPrivate },
       });
     } else {
+      navigate("/login");
       console.log(response);
     }
   };
@@ -96,6 +97,7 @@ function Card({ name, desc, isPrivate }: IProps) {
         state: { name: name, desc: desc, isPrivate: isPrivate },
       });
     } else {
+      navigate("/login");
       console.log(response);
     }
   };
