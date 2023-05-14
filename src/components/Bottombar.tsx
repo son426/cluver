@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -36,6 +37,7 @@ const Icon = styled.span<{ isActive: boolean }>`
   border-radius: 7px;
   text-align: center;
   font-family: ${(props) => props.theme.titleFont};
+  cursor: pointer;
 `;
 
 const TextDiv = styled.div`
@@ -71,17 +73,19 @@ function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
       <Container>
         <IconDiv>
           <Icon isActive={first}>
-            <span
-              className="material-symbols-outlined"
-              style={{
-                fontSize: "32px",
-                lineHeight: "140%",
-                paddingLeft: "2px",
-                fontVariationSettings: "'FILL' 1",
-              }}
-            >
-              how_to_reg
-            </span>
+            <Link to="/attendance">
+              <span
+                className="material-symbols-outlined"
+                style={{
+                  fontSize: "32px",
+                  lineHeight: "140%",
+                  paddingLeft: "2px",
+                  fontVariationSettings: "'FILL' 1",
+                }}
+              >
+                how_to_reg
+              </span>
+            </Link>
           </Icon>
           <Icon isActive={second}>
             <span
@@ -129,7 +133,7 @@ function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
               transform: "scaleY(-1)",
             }}
           >
-            ♣
+            <Link to="/">♣</Link>
           </Icon>
         </IconDiv>
         <TextDiv>
