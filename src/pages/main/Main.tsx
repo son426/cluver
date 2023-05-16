@@ -5,9 +5,6 @@ import Bottombar from "../../components/Bottombar";
 import logo from "../../assets/images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { club } from "../../util/atoms";
 
 const Wrap = styled.div`
   width: 360px;

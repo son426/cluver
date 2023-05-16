@@ -115,7 +115,7 @@ function Login() {
   const btnRef = useRef<any>(null);
   const errorRef = useRef<any>(null);
 
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -133,28 +133,23 @@ function Login() {
     e.preventDefault();
     //valid 확인
     if (id !== "" && password !== "") {
-      setLoading(true);
+      // setLoading(true);
       const response = await loginValidate(id, password);
       if (response.status === 201) {
         const info = response.data.manager;
         //set manager info
-        let clubs = [] as IClub[];
-        info.clubs.map((club: any, i: number) => {
-          clubs.push({
-            id: club.id,
-            name: club.name,
-            description: club.description,
-            img: club.img,
-            status: club.status,
-          });
+        setManagerInfo({
+          id: info.id,
+          email: info.manager_email,
+          loginID: info.manager_id,
+          name: info.manager_name,
         });
-        setManagerInfo({ name: info.manager_name, clubs: clubs });
         navigate("/admin");
       } else {
         console.log("error: ", response);
         errorRef.current.style.display = "block";
       }
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
