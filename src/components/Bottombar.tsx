@@ -13,6 +13,8 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   font-family: ${(props) => props.theme.textFont};
+  background: ${(props) => props.theme.bgColor};
+  z-index: 10;
 `;
 
 const IconDiv = styled.div`
