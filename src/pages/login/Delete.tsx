@@ -4,6 +4,9 @@ import Bottombar from "../../components/Bottombar";
 import SimpleCard from "../../components/SimpleCard";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { IClub, manager } from "../../util/atoms";
+import { getClubs } from "../../util/api";
 
 const Background = styled.div`
   width: 100vw;
@@ -45,14 +48,13 @@ const Title = styled.span`
   font-family: ${(props) => props.theme.textFont};
   color: ${(props) => props.theme.iconColor};
 `;
-const CheckBox = styled.span<{ isActive: boolean }>`
+const CheckBox = styled.div<{ isActive: boolean }>`
   width: 15px;
   height: 15px;
   border: 1px solid
     ${(props) => (props.isActive ? "transparent" : props.theme.iconColor)};
   background: ${(props) =>
     props.isActive ? props.theme.gradient : props.theme.bgColor};
-  cursor: pointer;
 `;
 const CardContainer = styled.div`
   width: 80%;
@@ -61,6 +63,8 @@ const CardContainer = styled.div`
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  cursor: pointer;
+  z-index: 2;
 `;
 const Button = styled.div`
   width: 70%;
@@ -75,8 +79,16 @@ const Button = styled.div`
   font-family: ${(props) => props.theme.textFont};
   cursor: pointer;
 `;
+const ModalBg = styled.div`
+  display: none; //flex
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  position: fixed;
+  justify-content: center;
+`;
 const Modal = styled.div`
-  opacity: 0;
   width: 80%;
   border: 1px solid white;
   padding: 20px 30px;
@@ -98,7 +110,7 @@ const TextWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin-top: 10px;
+  margin-top: 18px;
   & {
     color: ${(props) => props.theme.iconColor};
     font-size: 10px;
@@ -112,19 +124,15 @@ const SmallText = styled.div`
 `;
 
 function Delete() {
+  const data = useRecoilValue(manager);
+
   const navigate = useNavigate();
   const modalRef = useRef<any>(null);
   const btnRef = useRef<any>(null);
 
-  //예시 데이터
-  const data = {
-    name: "손채환",
-    list: [
-      { name: "Homebrew", desc: "개발 동아리", isPrivate: "false" },
-      { name: "aloha", desc: "우주최강 알고리즘 동라리", isPrivate: "true" },
-    ],
-  };
-  const [chosen, setChosen] = useState<boolean[]>([]);
+  const [chosen, setChosen] = useState<boolean[]>([false]);
+  const [clubs, setClubs] = useState<IClub[]>([]);
+
   const onChoose = (i: number) => {
     setChosen((prev) => {
       let old = [...prev];
@@ -133,13 +141,27 @@ function Delete() {
     });
   };
   const onWillDelete = () => {
-    if (chosen.includes(true)) modalRef.current.style.opacity = 1;
+    if (chosen.includes(true)) modalRef.current.style.display = "flex";
   };
   const onDelete = () => {
     //삭제
     navigate("/admin");
   };
 
+  const getClubsData = async () => {
+    const response = await getClubs(localStorage.getItem("token"));
+    if (response) {
+      console.log(response);
+      setClubs(response);
+    } else {
+      navigate("/login");
+      console.log(response);
+    }
+  };
+
+  useEffect(() => {
+    getClubsData();
+  }, []);
   useEffect(() => {
     if (chosen.includes(true)) {
       btnRef.current.style.background =
@@ -147,6 +169,7 @@ function Delete() {
     } else {
       btnRef.current.style.background = "white";
     }
+    console.log(chosen);
   }, [chosen]);
 
   return (
@@ -154,34 +177,36 @@ function Delete() {
       <Wrap>
         <Navbar></Navbar>
         <Container>
-          <Modal ref={modalRef}>
-            <Text>삭제한 동아리는 복구할 수 없습니다.</Text>
-            <Text>정말 삭제하시겠습니까?</Text>
-            <TextWrapper>
-              <SmallText onClick={onDelete}>삭제하기</SmallText>
-              <span>|</span>
-              <SmallText
-                onClick={() => {
-                  modalRef.current.style.opacity = 0;
-                }}
-              >
-                취소
-              </SmallText>
-            </TextWrapper>
-          </Modal>
+          <ModalBg ref={modalRef}>
+            <Modal>
+              <Text>삭제한 동아리는 복구할 수 없습니다.</Text>
+              <Text>정말 삭제하시겠습니까?</Text>
+              <TextWrapper>
+                <SmallText onClick={onDelete}>삭제하기</SmallText>
+                <span>|</span>
+                <SmallText
+                  onClick={() => {
+                    modalRef.current.style.display = "none";
+                  }}
+                >
+                  취소
+                </SmallText>
+              </TextWrapper>
+            </Modal>
+          </ModalBg>
           <div style={{ marginBottom: "10px" }}>
             <UserName>{data.name}</UserName>
             <Title> 님이 관리 중인 동아리입니다.</Title>
           </div>
-          {data.list.map((club: any, i: number) => (
-            <CardContainer>
-              <CheckBox isActive={chosen[i]} onClick={() => onChoose(i)} />
+          {clubs.map((club: any) => (
+            <CardContainer onClick={() => onChoose(club.id)}>
+              <CheckBox isActive={chosen[club.id]} />
               <SimpleCard
                 key={club.name}
                 name={club.name.toUpperCase()}
-                desc={club.desc}
-                isPrivate={club.isPrivate == "true" ? true : false}
-                chosen={chosen[i]}
+                desc={club.description}
+                isPrivate={club.status == "PRIVATE" ? true : false}
+                chosen={chosen[club.id]}
               />
             </CardContainer>
           ))}

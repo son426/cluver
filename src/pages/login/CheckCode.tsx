@@ -5,6 +5,7 @@ import SimpleCard from "../../components/SimpleCard";
 import { useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import { createCheckCode } from "../../util/api";
+import { useRecoilState } from "recoil";
 
 const Background = styled.div`
   width: 100vw;
@@ -91,13 +92,10 @@ function CheckCode() {
       state.id
     );
     if (response.status === 201) {
-      setCode(response.data?.checkCode);
-      //recoil에 code 추가
+      setCode(response.data.checkCode);
     }
   };
-  const onEndCheck = () => {
-    //recoil에서 code 삭제
-  };
+  const onEndCheck = () => {};
   useEffect(() => {
     getCode();
   }, []);

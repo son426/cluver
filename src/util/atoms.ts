@@ -1,21 +1,20 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
-export const club = atom({
-  key: "club",
-  default: [] as any,
-});
-
 export interface IClub {
   id: number;
   name: string;
   description: string;
   img: string;
   status: "PUBLIC" | "PRIVATE";
+  code: string | null;
 }
+
 export interface IManager {
+  id: number;
+  email: string;
+  loginID: string;
   name: string;
-  clubs: IClub[];
 }
 
 const { persistAtom } = recoilPersist({
