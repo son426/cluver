@@ -18,7 +18,7 @@ function Router() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/delete" element={<Delete />} />
         <Route path="/checkcode" element={<CheckCode />} />
-        <Route path="/attendance" element={<Attendance />} />
+        <Route path="/attendance/:userID" element={<Attendance />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Main />} />

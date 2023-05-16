@@ -157,7 +157,6 @@ function Main() {
       src: "",
       about: "개발 동아리",
       lock: "lock_open_right",
-      link: "/attendance",
     },
     {
       name: "HOMEBREWWW",
@@ -165,7 +164,6 @@ function Main() {
       src: "",
       about: "괴발개발 동아리",
       lock: "lock",
-      link: "/attendance",
     },
   ];
   const search = useRef<any>(null);
@@ -174,8 +172,6 @@ function Main() {
   const [a, setArr] = useState(arr);
   //const [resAPI, getRes] = useState([]);
   var resAPI = [] as any;
-  const [ct, upCt] = useState(0);
-  const [clubRes, setClub] = useRecoilState(club);
 
   useEffect(() => {
     if (word === "") {
@@ -203,7 +199,6 @@ function Main() {
       //console.log(response.data);
       resAPI = response.data;
       console.log(resAPI);
-      upCt(ct + 1);
     } catch (err) {
       console.log(err);
     }
@@ -241,11 +236,9 @@ function Main() {
               {a.map((e) => (
                 <li>
                   <Res onClick={Api}>
-                    <Link to={e.link}>
-                      <ResImg>♣</ResImg>
-                      <ResName>{e.name}</ResName>
-                      <ResAbout>{e.about}</ResAbout>
-                    </Link>
+                    <ResImg>♣</ResImg>
+                    <ResName>{e.name}</ResName>
+                    <ResAbout>{e.about}</ResAbout>
                     <ResLock>
                       <span
                         className="material-symbols-outlined"
