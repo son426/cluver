@@ -6,8 +6,8 @@ import Calendar from "react-calendar";
 import "../../../node_modules/react-calendar/dist/Calendar.css";
 import moment from "moment";
 import "./Calendar.css";
-import { useRecoilValue } from "recoil";
-import { club } from "../../util/atoms";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const Wrap = styled.div`
   width: 360px;
@@ -283,96 +283,13 @@ const PickBtn = styled.div`
 `;
 
 function Attendance() {
+  const params = useParams();
+
   let arr = [
     {
-      name: "홍길동",
-      birth: "0101",
-      percent: "77",
-    },
-    {
-      name: "가나다",
-      birth: "0428",
-      percent: "100",
-    },
-    {
-      name: "신짱구",
-      birth: "0505",
-      percent: "32",
-    },
-    {
-      name: "홍길동",
-      birth: "0101",
-      percent: "77",
-    },
-    {
-      name: "가나다",
-      birth: "0428",
-      percent: "100",
-    },
-    {
-      name: "신짱구",
-      birth: "0505",
-      percent: "32",
-    },
-    {
-      name: "홍길동",
-      birth: "0101",
-      percent: "77",
-    },
-    {
-      name: "가나다",
-      birth: "0428",
-      percent: "100",
-    },
-    {
-      name: "신짱구",
-      birth: "0505",
-      percent: "32",
-    },
-    {
-      name: "홍길동",
-      birth: "0101",
-      percent: "77",
-    },
-    {
-      name: "가나다",
-      birth: "0428",
-      percent: "100",
-    },
-    {
-      name: "신짱구",
-      birth: "0505",
-      percent: "32",
-    },
-    {
-      name: "홍길동",
-      birth: "0101",
-      percent: "77",
-    },
-    {
-      name: "가나다",
-      birth: "0428",
-      percent: "100",
-    },
-    {
-      name: "신짱구",
-      birth: "0505",
-      percent: "32",
-    },
-    {
-      name: "홍길동",
-      birth: "0101",
-      percent: "77",
-    },
-    {
-      name: "가나다",
-      birth: "0428",
-      percent: "100",
-    },
-    {
-      name: "신짱구",
-      birth: "0505",
-      percent: "32",
+      user_name: "",
+      code: "",
+      attendances: [] as any,
     },
   ];
 
@@ -388,7 +305,7 @@ function Attendance() {
   const [date, setDate] = useState<any>();
   const [fmDate, setFmDate] = useState(date);
   const pick = useRef<any>();
-  const clubRes = useRecoilValue(club);
+  let resAPI = [] as any;
 
   const key = "1234";
   const today = moment().format("YYYY-MM-DD");
@@ -435,6 +352,41 @@ function Attendance() {
     } else {
     }
   }
+
+  const [flag, setF] = useState<any>(0);
+  /* const url = "http://172.20.10.4:8000/club/" + params.userID;
+  axios.get(url).then(function (response) {
+    resAPI = response.data;
+  }); */
+
+  const Api = async () => {
+    try {
+      const url = "http://172.20.10.4:8000/club/" + params.userID;
+      const response = await axios.get(url);
+      resAPI = response.data;
+      console.log(resAPI);
+      setArr(resAPI.users);
+      if (resAPI.users) {
+        setF(1);
+      } else {
+        console.log("2");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    Api();
+    setArr(resAPI.users);
+    if (a.length > 0) {
+      a.forEach((e) => {
+        console.log(e.attendances);
+      });
+    } else {
+      console.log("yet");
+    }
+  }, [flag]);
 
   return (
     <>
@@ -580,120 +532,158 @@ function Attendance() {
             style={{ opacity: "1" }}
           >
             <ul>
-              {a.map((e) => (
-                <li>
-                  <MemberDiv>
-                    <MemberText
-                      style={{
-                        marginLeft: "7px",
-                        width: "50px",
-                      }}
-                    >
-                      {e.name}
-                    </MemberText>
-                    <MemberText style={{ marginRight: "5px" }}>
-                      {e.birth}
-                    </MemberText>
-                    <MemberText
-                      style={{
-                        width: "21px",
-                      }}
-                    >
-                      <span
-                        className="material-symbols-outlined"
+              {a?.map((e: any) => {
+                let ct = 0;
+                let per = Math.round((ct / e.attendances.length) * 100);
+                return (
+                  <li>
+                    <MemberDiv>
+                      <MemberText
                         style={{
-                          fontSize: "22px",
-                          lineHeight: "12px",
-                          cursor: "pointer",
+                          marginLeft: "7px",
+                          width: "50px",
                         }}
                       >
-                        navigate_before
-                      </span>
-                    </MemberText>
-                    <MemberText
-                      style={{
-                        width: "85px",
-                        marginLeft: "0",
-                        color: "grey",
-                        fontFamily: "copperplate",
-                        fontSize: "17px",
-                        paddingTop: "7px",
-                      }}
-                    >
-                      <span
+                        {e.user_name}
+                      </MemberText>
+                      <MemberText style={{ marginRight: "5px" }}>
+                        {e.code}
+                      </MemberText>
+                      <MemberText
                         style={{
-                          cursor: "pointer",
-                          marginRight: "5px",
-                          color: "#9ee69a",
+                          width: "21px",
                         }}
                       >
-                        ♣
-                      </span>
-                      <span
+                        <span
+                          className="material-symbols-outlined"
+                          style={{
+                            fontSize: "22px",
+                            lineHeight: "12px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          navigate_before
+                        </span>
+                      </MemberText>
+                      <MemberText
                         style={{
-                          cursor: "pointer",
-                          marginRight: "5px",
-                          color: "#9ee69a",
-                        }}
-                      >
-                        ♣
-                      </span>
-                      <span
-                        style={{
-                          cursor: "pointer",
-                          marginRight: "5px",
+                          width: "85px",
+                          marginLeft: "0",
                           color: "grey",
+                          fontFamily: "copperplate",
+                          fontSize: "17px",
+                          paddingTop: "7px",
                         }}
                       >
-                        ♣
-                      </span>
-                      <span
+                        {e.attendances?.map((i: any) => {
+                          if (i.isChecked === true) {
+                            ct++;
+                            per = Math.round((ct / e.attendances.length) * 100);
+                            return (
+                              <span
+                                style={{
+                                  cursor: "pointer",
+                                  marginRight: "5px",
+                                  color: "#9ee69a",
+                                }}
+                              >
+                                ♣
+                              </span>
+                            );
+                          } else {
+                            per = Math.round((ct / e.attendances.length) * 100);
+                            return (
+                              <span
+                                style={{
+                                  cursor: "pointer",
+                                  marginRight: "5px",
+                                  color: "grey",
+                                }}
+                              >
+                                ♣
+                              </span>
+                            );
+                          }
+                        })}
+                        {/* <span
+                          style={{
+                            cursor: "pointer",
+                            marginRight: "5px",
+                            color: "#9ee69a",
+                          }}
+                        >
+                          ♣
+                        </span>
+                        <span
+                          style={{
+                            cursor: "pointer",
+                            marginRight: "5px",
+                            color: "#9ee69a",
+                          }}
+                        >
+                          ♣
+                        </span>
+                        <span
+                          style={{
+                            cursor: "pointer",
+                            marginRight: "5px",
+                            color: "grey",
+                          }}
+                        >
+                          ♣
+                        </span>
+                        <span
+                          style={{
+                            cursor: "pointer",
+                            marginRight: "5px",
+                            color: "grey",
+                          }}
+                        >
+                          ♣
+                        </span>
+                        <span
+                          style={{
+                            cursor: "pointer",
+                            marginRight: "1px",
+                            color: "#9ee69a",
+                          }}
+                        >
+                          ♣
+                        </span> */}
+                      </MemberText>
+                      <MemberText
                         style={{
-                          cursor: "pointer",
-                          marginRight: "5px",
-                          color: "grey",
+                          width: "18px",
+                          marginLeft: "0",
+                          marginRight: "10px",
                         }}
                       >
-                        ♣
-                      </span>
-                      <span
-                        style={{
-                          cursor: "pointer",
-                          marginRight: "1px",
-                          color: "#9ee69a",
-                        }}
-                      >
-                        ♣
-                      </span>
-                    </MemberText>
-                    <MemberText
-                      style={{
-                        width: "18px",
-                        marginLeft: "0",
-                        marginRight: "10px",
-                      }}
-                    >
-                      <span
-                        className="material-symbols-outlined"
-                        style={{
-                          fontSize: "22px",
-                          lineHeight: "12px",
-                        }}
-                      >
-                        navigate_next
-                      </span>
-                    </MemberText>
-                    <MemberText style={{ width: "50px" }}>
-                      <BarArea>
-                        <Bar style={{ width: `${e.percent}%` }}></Bar>
-                      </BarArea>
-                    </MemberText>
-                    <MemberText style={{ textAlign: "right" }}>
-                      {e.percent} %
-                    </MemberText>
-                  </MemberDiv>
-                </li>
-              ))}
+                        <span
+                          className="material-symbols-outlined"
+                          style={{
+                            fontSize: "22px",
+                            lineHeight: "12px",
+                          }}
+                        >
+                          navigate_next
+                        </span>
+                      </MemberText>
+                      <MemberText style={{ width: "50px" }}>
+                        <BarArea>
+                          <Bar
+                            style={{
+                              width: `${per}%`,
+                            }}
+                          ></Bar>
+                        </BarArea>
+                      </MemberText>
+                      <MemberText style={{ textAlign: "right" }}>
+                        {per} %
+                      </MemberText>
+                    </MemberDiv>
+                  </li>
+                );
+              })}
             </ul>
           </Section>
           <Section
