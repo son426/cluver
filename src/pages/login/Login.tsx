@@ -100,6 +100,12 @@ const Text = styled.div`
     cursor: pointer;
   }
 `;
+const Error = styled.span`
+  font-size: 10px;
+  color: #d23535;
+  display: none;
+  margin-bottom: 5px;
+`;
 
 function Login() {
   const navigate = useNavigate();
@@ -107,6 +113,7 @@ function Login() {
   const idRef = useRef<any>(null);
   const pwRef = useRef<any>(null);
   const btnRef = useRef<any>(null);
+  const errorRef = useRef<any>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [id, setId] = useState<string>("");
@@ -116,9 +123,11 @@ function Login() {
 
   const onChangeId = (e: React.FormEvent<HTMLInputElement>) => {
     setId(e.currentTarget.value);
+    errorRef.current.style.display = "none";
   };
   const onChangePw = (e: React.FormEvent<HTMLInputElement>) => {
     setPassword(e.currentTarget.value);
+    errorRef.current.style.display = "none";
   };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -143,6 +152,7 @@ function Login() {
         navigate("/admin");
       } else {
         console.log("error: ", response);
+        errorRef.current.style.display = "block";
       }
       setLoading(false);
     }
@@ -190,6 +200,7 @@ function Login() {
                 onChange={onChangePw}
               ></Input>
             </InputWrapper>
+            <Error ref={errorRef}>* 유효하지 않습니다</Error>
             <Button ref={btnRef} type="submit">
               로그인
             </Button>

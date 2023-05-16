@@ -1,7 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { tokenValidate } from "../util/api";
-
+import { useRef } from "react";
 const Container = styled.div`
   width: 75%;
   margin-bottom: 15px;
@@ -38,6 +38,12 @@ const Icon = styled.div`
   color: white;
   text-align: center;
 `;
+const Logo = styled.img`
+  width: 30px;
+  height: 30px;
+  transform: translateY(-5%) translateX(-2%);
+  object-fit: contain;
+`;
 const Title = styled.span`
   font-size: 15px;
   font-weight: 600;
@@ -71,18 +77,23 @@ const Text = styled.div`
   }
 `;
 interface IProps {
+  id: number;
   name: string;
   desc: string;
+  img: string;
   isPrivate: boolean;
 }
-function Card({ name, desc, isPrivate }: IProps) {
+function Card({ id, name, desc, img, isPrivate }: IProps) {
   const navigate = useNavigate();
+
+  const iconRef = useRef<any>(null);
+  const imgRef = useRef<any>(null);
 
   const onCreateCode = async () => {
     const response = await tokenValidate(localStorage.getItem("token"));
     if (response) {
       navigate("/checkcode", {
-        state: { name: name, desc: desc, isPrivate: isPrivate },
+        state: { id: id, name: name, desc: desc, isPrivate: isPrivate },
       });
     } else {
       navigate("/login");
@@ -94,12 +105,23 @@ function Card({ name, desc, isPrivate }: IProps) {
     if (response) {
       navigate("/editclub", {
         //동아리설정변경하기페이지
-        state: { name: name, desc: desc, isPrivate: isPrivate },
+        state: {
+          id: id,
+          name: name,
+          desc: desc,
+          img: img,
+          isPrivate: isPrivate,
+        },
       });
     } else {
       navigate("/login");
       console.log(response);
     }
+  };
+  const handleImgError = () => {
+    //img src가 유효하지 않은 경우 클로버 아이콘을 띄움
+    imgRef.current.style.display = "none";
+    iconRef.current.style.display = "block";
   };
   return (
     <Container>
@@ -107,7 +129,13 @@ function Card({ name, desc, isPrivate }: IProps) {
         <TitleWrapper>
           <TitleWrapper>
             <Icon>
-              <span style={{ lineHeight: "160%" }}>♣</span>
+              <Logo ref={imgRef} src={img} onError={handleImgError} />
+              <span
+                ref={iconRef}
+                style={{ lineHeight: "160%", display: "none" }}
+              >
+                ♣
+              </span>
             </Icon>
             <DescWrapper>
               <Title>{name}</Title>

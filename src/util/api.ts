@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = `http://172.20.10.4:8000`;
+const BASE_URL = `http://34.64.184.11:8000`;
 
 export async function loginValidate(id: string, password: string) {
   try {
@@ -13,6 +13,7 @@ export async function loginValidate(id: string, password: string) {
     return response;
   } catch (e: any) {
     return e.response.data.message;
+    console.log(e);
   }
 }
 export async function tokenValidate(token: string | null) {
@@ -24,5 +25,25 @@ export async function tokenValidate(token: string | null) {
   } catch (e: any) {
     console.log("error: ", e);
     return false;
+  }
+}
+
+export async function createCheckCode(
+  month: number,
+  day: number,
+  clubId: number
+) {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/club-attendance/startcheck`,
+      {
+        date: month + "월" + day + "일",
+        clubId: clubId,
+      }
+    );
+    return response;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
   }
 }

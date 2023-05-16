@@ -3,6 +3,8 @@ import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import SimpleCard from "../../components/SimpleCard";
 import { useLocation } from "react-router";
+import { useEffect, useState } from "react";
+import { createCheckCode } from "../../util/api";
 
 const Background = styled.div`
   width: 100vw;
@@ -47,9 +49,27 @@ const CodeText = styled.span`
   color: transparent;
   margin-bottom: 20px;
 `;
+const TextWrapper = styled.div`
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  & {
+    color: ${(props) => props.theme.iconColor};
+    font-size: 10px;
+  }
+`;
+const Text = styled.div`
+  :hover {
+    color: ${(props) => props.theme.accentColor};
+    transition: all ease 0.3s;
+    cursor: pointer;
+  }
+`;
 
 interface IRouterState {
   state: {
+    id: number;
     name: string;
     desc: string;
     isPrivate: boolean;
@@ -62,6 +82,26 @@ function CheckCode() {
   let month = ("0" + (today.getMonth() + 1)).slice(-2);
   let day = ("0" + today.getDate()).slice(-2);
 
+  const [code, setCode] = useState<string>("…");
+
+  const getCode = async () => {
+    const response = await createCheckCode(
+      today.getMonth() + 1,
+      today.getDate(),
+      state.id
+    );
+    if (response.status === 201) {
+      setCode(response.data?.checkCode);
+      //recoil에 code 추가
+    }
+  };
+  const onEndCheck = () => {
+    //recoil에서 code 삭제
+  };
+  useEffect(() => {
+    getCode();
+  }, []);
+
   return (
     <Background>
       <Wrap>
@@ -71,13 +111,16 @@ function CheckCode() {
             {year}-{month}-{day}
           </Title>
           <Title>출석 코드</Title>
-          <CodeText>0505</CodeText> {/*랜덤생성*/}
+          <CodeText>{code}</CodeText>
           <SimpleCard
             name={state.name}
             desc={state.desc}
             isPrivate={state.isPrivate}
             chosen={false}
           />
+          <TextWrapper style={{ position: "absolute", bottom: "20px" }}>
+            <Text onClick={onEndCheck}>출석 마감하기</Text>
+          </TextWrapper>
         </Container>
         <Bottombar
           first={false}

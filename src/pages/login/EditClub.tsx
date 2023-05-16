@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const Background = styled.div`
   width: 100vw;
@@ -100,7 +101,19 @@ const Button = styled.div<{ isActive: boolean }>`
   cursor: pointer;
 `;
 
+interface IRouterState {
+  state: {
+    id: number;
+    name: string;
+    desc: string;
+    img: string;
+    isPrivate: boolean;
+  };
+}
+
 function EditClub() {
+  const { state } = useLocation() as IRouterState;
+
   const [isPrivate, setIsPrivate] = useState(false);
   const toggle = () => {
     setIsPrivate((prev) => !prev);
@@ -112,7 +125,12 @@ function EditClub() {
         <Container>
           <InputBox>
             <WarningText>*</WarningText>
-            <Input type="text" placeholder="동아리 이름" onChange={(e) => {}} />
+            <Input
+              type="text"
+              placeholder="동아리 이름"
+              value={state.name}
+              onChange={(e) => {}}
+            />
           </InputBox>
           <InputBox style={{ minHeight: "50px" }}>
             <WarningText>*</WarningText>
@@ -121,6 +139,7 @@ function EditClub() {
               maxLength={30}
               style={{ resize: "none" }}
               placeholder="동아리 소개"
+              value={state.desc}
               onChange={(e) => {}}
             />
           </InputBox>
@@ -152,6 +171,7 @@ function EditClub() {
               <Input
                 type="text"
                 placeholder="동아리 프로필 사진"
+                value={state.img}
                 onChange={(e) => {}}
               />
             </InputBox>
