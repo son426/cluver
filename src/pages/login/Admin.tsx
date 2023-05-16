@@ -2,9 +2,10 @@ import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import Card from "../../components/Card";
-import { boolean } from "yargs";
 import { Link, useNavigate } from "react-router-dom";
 import { tokenValidate } from "../../util/api";
+import { useRecoilValue } from "recoil";
+import { manager } from "../../util/atoms";
 
 const Background = styled.div`
   width: 100vw;
@@ -83,14 +84,7 @@ const Text = styled.div`
 
 function Login() {
   const navigate = useNavigate();
-  //예시 데이터
-  const data = {
-    name: "손채환",
-    list: [
-      { name: "Homebrew", desc: "개발 동아리", isPrivate: "false" },
-      { name: "aloha", desc: "우주최강 알고리즘 동라리", isPrivate: "true" },
-    ],
-  };
+  const data = useRecoilValue(manager);
 
   const onAddClub = async () => {
     const response = await tokenValidate(localStorage.getItem("token"));
@@ -117,26 +111,28 @@ function Login() {
         <Container>
           <div style={{ marginBottom: "10px" }}>
             <UserName>{data.name}</UserName>
-            {data.list.length == 0 ? (
+            {data.clubs.length == 0 ? (
               <Title> 님이 관리 중인 동아리가 없습니다.</Title>
             ) : (
               <Title> 님이 관리 중인 동아리입니다.</Title>
             )}
           </div>
 
-          {data.list.map((club: any) => {
+          {data.clubs.map((club: any) => {
             if (club)
               return (
                 <Card
-                  key={club.name}
+                  key={club.id}
+                  id={club.id}
                   name={club.name.toUpperCase()}
-                  desc={club.desc}
-                  isPrivate={club.isPrivate == "true" ? true : false}
+                  desc={club.description}
+                  img={club.img}
+                  isPrivate={club.status == "PRIVATE" ? true : false}
                 />
               );
           })}
           <AddButton onClick={onAddClub}>관리 중인 동아리 추가하기 +</AddButton>
-          {data.list.length == 0 ? (
+          {data.clubs.length == 0 ? (
             <></>
           ) : (
             <TextWrapper style={{ position: "absolute", bottom: "20px" }}>
