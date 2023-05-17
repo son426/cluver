@@ -8,8 +8,13 @@ import moment from "moment";
 import "./Calendar.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL, searchName } from "../../util/api";
-import { doCheck } from "../../util/api";
+import {
+  BASE_URL,
+  searchName,
+  doCheck,
+  codeCheck,
+  getClubAttendance,
+} from "../../util/api";
 
 const Wrap = styled.div`
   width: 360px;
@@ -311,6 +316,8 @@ function Attendance() {
   const clovers = useRef<any>([]);
   const [act, setAct] = useState("");
   const [num, setNum] = useState(0);
+  const [message, setM] = useState("유효하지 않은 출석 코드입니다.");
+  const [codeStatus, setCodeStatus] = useState(3);
 
   let N = 0;
 
@@ -408,12 +415,42 @@ function Attendance() {
     );
   };
 
+  const chCode = async () => {
+    const response = await codeCheck("1", "1", Number(params.clubID), code);
+    //console.log(response);
+    switch (response) {
+      case "해당 club_attendance 없음":
+        //console.log(1);
+        setCodeStatus(1);
+        setM("생성된 출석 코드가 없습니다.");
+        return 1;
+      case "출석 성공":
+        //console.log(2);
+        setCodeStatus(2);
+        setM("인증되었습니다.");
+        return 2;
+      case "출석코드가 다름":
+        //console.log(3);
+        setCodeStatus(3);
+        setM("유효하지 않은 출석 코드입니다.");
+        return 3;
+    }
+  };
+
+  const getAttendance = async () => {
+    const m = "1";
+    const d = "2";
+    const response = await getClubAttendance(m, d, Number(params.clubID));
+    console.log(m + "월" + d + "일");
+    console.log(response);
+  };
+
   return (
     <>
       <Wrap>
         <Bg>
           <Navbar />
-          <Date>{today}</Date>
+          <Date onClick={getAttendance}>{today}</Date>
           <Text>출석 코드를 입력하세요</Text>
           <CodeBox
             ref={(e) => {
@@ -437,8 +474,9 @@ function Attendance() {
                 left: "225px",
                 cursor: "pointer",
               }}
-              onClick={() => {
-                if (code === key) {
+              onClick={async () => {
+                const res = await chCode();
+                if (res === 2) {
                   setCh("done");
                   success.current.style.opacity = "1";
                   success.current.style.zIndex = "10";
@@ -456,7 +494,10 @@ function Attendance() {
             </span>
           </CodeBox>
           <InputDiv ref={success}>
-            <InputText>인증되었습니다.</InputText>
+            <InputText>
+              {/* 인증되었습니다. */}
+              {message}
+            </InputText>
             <InputBox
               ref={(e) => {
                 box.current[1] = e;
@@ -512,7 +553,8 @@ function Attendance() {
           </InputDiv>
           <FailDiv ref={fail}>
             <InputText style={{ marginTop: "20px" }}>
-              유효하지 않은 출석 코드입니다.
+              {/* 유효하지 않은 출석 코드입니다. */}
+              {message}
             </InputText>
             <InputText style={{ marginTop: "0" }}>다시 입력해주세요.</InputText>
           </FailDiv>
