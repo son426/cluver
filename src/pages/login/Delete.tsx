@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { IClub, manager } from "../../util/atoms";
-import { getClubs } from "../../util/api";
+import { deleteClub, getClubs } from "../../util/api";
 
 const Background = styled.div`
   width: 100vw;
@@ -122,6 +122,29 @@ const SmallText = styled.div`
     transition: all ease 0.3s;
   }
 `;
+const CardListContainer = styled.div`
+  width: 96%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: red; */
+  max-height: 50%;
+  overflow-y: scroll;
+  margin: 10px auto;
+  ::-webkit-scrollbar {
+    width: 7px;
+  }
+  ::-webkit-scrollbar-track {
+    background: ${(props) => props.theme.boxColor};
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: ${(props) => props.theme.gradient};
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+`;
 
 function Delete() {
   const data = useRecoilValue(manager);
@@ -130,22 +153,32 @@ function Delete() {
   const modalRef = useRef<any>(null);
   const btnRef = useRef<any>(null);
 
-  const [chosen, setChosen] = useState<boolean[]>([false]);
+  const [chosen, setChosen] = useState<boolean[]>([]);
   const [clubs, setClubs] = useState<IClub[]>([]);
 
-  const onChoose = (i: number) => {
+  const onChoose = (id: number) => {
     setChosen((prev) => {
       let old = [...prev];
-      old[i] = !old[i];
+      old[id] = !old[id];
       return old;
     });
   };
   const onWillDelete = () => {
     if (chosen.includes(true)) modalRef.current.style.display = "flex";
   };
-  const onDelete = () => {
-    //삭제
-    navigate("/admin");
+  const onDelete = async () => {
+    console.log("clubs", clubs);
+    console.log("chosen", chosen);
+    for (let id = 0; id < chosen.length; id++) {
+      if (chosen[id] === true) {
+        const response = await deleteClub(id, localStorage.getItem("token"));
+        if (response.status === 200) {
+          navigate("/admin");
+        } else {
+          console.log(response);
+        }
+      }
+    }
   };
 
   const getClubsData = async () => {
@@ -198,18 +231,20 @@ function Delete() {
             <UserName>{data.name}</UserName>
             <Title> 님이 관리 중인 동아리입니다.</Title>
           </div>
-          {clubs.map((club: any) => (
-            <CardContainer onClick={() => onChoose(club.id)}>
-              <CheckBox isActive={chosen[club.id]} />
-              <SimpleCard
-                key={club.name}
-                name={club.name.toUpperCase()}
-                desc={club.description}
-                isPrivate={club.status == "PRIVATE" ? true : false}
-                chosen={chosen[club.id]}
-              />
-            </CardContainer>
-          ))}
+          <CardListContainer>
+            {clubs.map((club: any) => (
+              <CardContainer onClick={() => onChoose(club.id)}>
+                <CheckBox isActive={chosen[club.id]} />
+                <SimpleCard
+                  key={club.id}
+                  name={club.name.toUpperCase()}
+                  desc={club.description}
+                  isPrivate={club.status == "PRIVATE" ? true : false}
+                  chosen={chosen[club.id]}
+                />
+              </CardContainer>
+            ))}
+          </CardListContainer>
           <Button ref={btnRef} onClick={onWillDelete}>
             선택 삭제
           </Button>

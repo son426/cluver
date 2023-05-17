@@ -76,6 +76,7 @@ function SimpleCard({ name, desc, isPrivate, chosen }: IProps) {
               fontSize: "15px",
               color: "white",
               fontVariationSettings: "'FILL' 1",
+              lineHeight: "180%",
             }}
           >
             {isPrivate ? "lock" : "lock_open_right"}

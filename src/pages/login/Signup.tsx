@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
+import { useRef, useState } from "react";
 
 const Background = styled.div`
   width: 100vw;
@@ -28,12 +29,12 @@ const Container = styled.div`
   align-items: center;
 `;
 const Modal = styled.div`
-  width: 70%;
+  display: none; //flex
+  width: 75%;
   border: 1px solid white;
   padding-top: 10px;
   padding-bottom: 5px;
   border-radius: 12px;
-  display: flex;
   align-items: center;
   flex-direction: column;
   position: absolute;
@@ -48,13 +49,13 @@ const Text = styled.span`
   margin-bottom: 5px;
 `;
 const EmailWrapper = styled.div`
-  width: 60%;
+  width: 70%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `;
 const InputBox = styled.div`
-  width: 60%;
+  width: 70%;
   min-width: 150px;
   border: 1px solid white;
   border-radius: 6px;
@@ -90,7 +91,7 @@ const Input = styled.input`
   }
 `;
 const Button = styled.div`
-  width: 60%;
+  width: 70%;
   border-radius: 6px;
   height: 30px;
   margin-bottom: 5px;
@@ -104,6 +105,24 @@ const Button = styled.div`
 `;
 
 function Signup() {
+  const dupRef = useRef<any>(null);
+  const sendRef = useRef<any>(null);
+  const btnRef = useRef<any>(null);
+
+  const [email, setEmail] = useState<string>();
+  const [name, setName] = useState<string>();
+  const [id, setId] = useState<string>();
+  const [pw, setPw] = useState<string>();
+  const [pwCheck, setPwCheck] = useState<string>();
+
+  const checkDuplicate = () => {};
+  const onSendMail = () => {};
+  const onSubmit = () => {
+    if (id !== "" && name !== "" && pw !== "" && pw === pwCheck) {
+      //api 요청
+    }
+  };
+
   return (
     <Background>
       <Wrap>
@@ -115,50 +134,68 @@ function Signup() {
           </Modal>
           <EmailWrapper>
             <InputBox>
-              <Input type="text" placeholder="이메일" onChange={(e) => {}} />
+              <Input
+                type="text"
+                placeholder="이메일"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.currentTarget.value);
+                }}
+              />
             </InputBox>
             <Button
+              ref={dupRef}
               style={{ marginLeft: "5px" }}
-              onMouseEnter={() => {}}
-              onMouseLeave={() => {}}
-              onClick={() => {}}
+              onClick={checkDuplicate}
             >
               중복 확인
             </Button>
           </EmailWrapper>
           <Text>* 발송하기 버튼을 누른 후 이메일 인증을 완료해 주세요.</Text>
-          <Button
-            onMouseEnter={() => {}}
-            onMouseLeave={() => {}}
-            onClick={() => {}}
-          >
+          <Button ref={sendRef} onClick={onSendMail}>
             인증 메일 발송하기
           </Button>
           <InputBox>
-            <Input type="text" placeholder="이름" onChange={(e) => {}} />
+            <Input
+              type="text"
+              placeholder="이름"
+              value={name}
+              onChange={(e) => {
+                setName(e.currentTarget.value);
+              }}
+            />
           </InputBox>
           <InputBox>
-            <Input type="text" placeholder="아이디" onChange={(e) => {}} />
+            <Input
+              type="text"
+              placeholder="아이디"
+              value={id}
+              onChange={(e) => {
+                setId(e.currentTarget.value);
+              }}
+            />
           </InputBox>
           <InputBox>
             <Input
               type="password"
               placeholder="비밀번호"
-              onChange={(e) => {}}
+              value={pw}
+              onChange={(e) => {
+                setPw(e.currentTarget.value);
+              }}
             />
           </InputBox>
           <InputBox>
             <Input
               type="password"
               placeholder="비밀번호 확인"
-              onChange={(e) => {}}
+              value={pwCheck}
+              onChange={(e) => {
+                setPwCheck(e.currentTarget.value);
+              }}
             />
           </InputBox>
-          <Button
-            onMouseEnter={() => {}}
-            onMouseLeave={() => {}}
-            onClick={() => {}}
-          >
+          <Button ref={btnRef} onClick={onSubmit}>
             회원가입
           </Button>
         </Container>
