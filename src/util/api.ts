@@ -197,3 +197,16 @@ export async function getClubAttendance(
     return false;
   }
 }
+
+export async function getCalendar(month: string, day: string, clubId: number) {
+  try {
+    const response = await axios.post(`${BASE_URL}/club-attendance/calendar`, {
+      date: month + "월" + day + "일",
+      clubId: clubId,
+    });
+    return response.data;
+  } catch (e: any) {
+    console.log("error: ", e);
+    return false;
+  }
+}

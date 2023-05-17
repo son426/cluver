@@ -13,282 +13,9 @@ import {
   doCheck,
   codeCheck,
   getClubAttendance,
+  getCalendar,
 } from "../../util/api";
-
-const Wrap = styled.div`
-  width: 360px;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 50%;
-  right: 50%;
-  transform: translateX(-50%);
-`;
-
-const Bg = styled.div`
-  width: 100%;
-  height: 100vh;
-  background-color: ${(props) => props.theme.bgColor};
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const Date = styled.div`
-  color: white;
-  font-size: 20px;
-  font-family: ${(props) => props.theme.textFont};
-  margin-bottom: 27px;
-  margin-top: 92px;
-`;
-
-const Text = styled.div`
-  color: white;
-  font-size: 14px;
-  font-family: ${(props) => props.theme.textFont};
-  margin-bottom: 12px;
-`;
-
-const CodeBox = styled.div`
-  width: 160px;
-  border: 1px solid white;
-  border-radius: 6px;
-  height: 37px;
-  border-radius: 7px;
-  /* border: 1px solid transparent; */
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  background-image: linear-gradient(
-      ${(props) => props.theme.bgColor},
-      ${(props) => props.theme.bgColor}
-    ),
-    ${(props) => props.theme.gradient};
-`;
-
-const Code = styled.input`
-  width: 160px;
-  border: 1px solid white;
-  border-radius: 7px;
-  height: 35px;
-  color: white;
-  text-align: left;
-  padding-left: 12px;
-  padding-right: 37px;
-  font-size: 15px;
-  background-color: transparent;
-  border: 1px solid transparent;
-  ::placeholder {
-    color: ${(props) => props.theme.formColor};
-  }
-  :focus {
-    outline: none;
-  }
-`;
-
-const InputDiv = styled.div`
-  width: 260px;
-  height: 160px;
-  border: 1px solid white;
-  margin-top: 80px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  z-index: -1;
-  background: ${(props) => props.theme.bgColor};
-  position: absolute;
-  top: 25vh;
-`;
-
-const InputText = styled.div`
-  color: white;
-  font-size: 14px;
-  font-family: ${(props) => props.theme.textFont};
-  margin-bottom: 10px;
-  margin-top: 15px;
-  display: flex;
-`;
-
-const InputBox = styled.div`
-  width: 180px;
-  border: 1px solid white;
-  border-radius: 6px;
-  height: 30px;
-  border-radius: 7px;
-  /* border: 1px solid transparent; */
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  background-image: linear-gradient(
-      ${(props) => props.theme.bgColor},
-      ${(props) => props.theme.bgColor}
-    ),
-    ${(props) => props.theme.gradient};
-  margin-bottom: 6px;
-`;
-
-const Input = styled.input`
-  width: 180px;
-  border: 1px solid white;
-  border-radius: 7px;
-  height: 30px;
-  padding-bottom: 3px;
-  color: white;
-  font-family: ${(props) => props.theme.textFont};
-  text-align: center;
-  font-size: 13px;
-  background-color: transparent;
-  border: 1px solid transparent;
-  ::placeholder {
-    color: ${(props) => props.theme.formColor};
-  }
-  :focus {
-    outline: none;
-  }
-`;
-
-const Btn = styled.div`
-  width: 180px;
-  border-radius: 6px;
-  height: 30px;
-  margin-bottom: 5px;
-  color: ${(props) => props.theme.bgColor};
-  background: white;
-  text-align: center;
-  font-size: 13px;
-  padding-top: 7px;
-  font-family: ${(props) => props.theme.textFont};
-  cursor: pointer;
-`;
-
-const FailDiv = styled.div`
-  opacity: 0;
-  width: 260px;
-  height: 80px;
-  border: 1px solid white;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  position: absolute;
-  top: 290px;
-  z-index: -1;
-  background: ${(props) => props.theme.bgColor};
-`;
-
-const ChooseDiv = styled.div`
-  width: 100%;
-  height: 40px;
-  position: absolute;
-  top: 218px;
-  display: flex;
-`;
-
-const Ch = styled.div`
-  width: 49%;
-  height: 20px;
-  text-align: center;
-  color: white;
-  font-size: 13px;
-  font-family: ${(props) => props.theme.textFont};
-  font-weight: lighter;
-  padding-top: 10px;
-  cursor: pointer;
-`;
-const Division = styled.div`
-  width: 2%;
-  padding-top: 10px;
-  height: 40px;
-  text-align: center;
-  color: white;
-  font-size: 13px;
-  font-family: ${(props) => props.theme.textFont};
-  font-weight: lighter;
-  cursor: default;
-`;
-
-const Section = styled.div`
-  width: 100%;
-  height: 380px;
-  background: ${(props) => props.theme.boxColor};
-  position: absolute;
-  top: 260px;
-  color: white;
-  overflow-y: auto;
-  overflow-x: hidden;
-  ::-webkit-scrollbar {
-    width: 5px;
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: ${(props) => props.theme.gradient};
-    border-radius: 5px;
-  }
-`;
-
-const MemberDiv = styled.div`
-  width: 96%;
-  height: 33px;
-  margin: 5px;
-  color: white;
-  display: flex;
-`;
-
-const MemberText = styled.div`
-  width: 38px;
-  height: 33px;
-  display: inline-block;
-  font-size: 14px;
-  font-family: ${(props) => props.theme.textFont};
-  font-weight: lighter;
-  margin-left: 3px;
-  padding-top: 10px;
-  text-align: center;
-  z-index: 1;
-`;
-
-const BarArea = styled.div`
-  width: 45px;
-  height: 4px;
-  border-radius: 3px;
-  background: white;
-  margin-top: 4.5px;
-`;
-
-const Bar = styled.div`
-  width: 5%;
-  height: 4px;
-  border-radius: 3px;
-  background: ${(props) => props.theme.gradient};
-`;
-
-const PickDiv = styled.div`
-  //opacity: 0;
-  width: 220px;
-  height: 125px;
-  border: 1px solid white;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  background: ${(props) => props.theme.bgColor};
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
-const PickBtn = styled.div`
-  display: inline-block;
-  width: 35px;
-  height: 14px;
-  color: ${(props) => props.theme.bgColor};
-  background: white;
-  font-size: 10.5px;
-  margin-left: 10px;
-  text-align: center;
-  border-radius: 3px;
-  cursor: pointer;
-  line-height: 13px;
-`;
+import * as S from "./Attendance.styled";
 
 function Attendance() {
   const params = useParams();
@@ -298,6 +25,8 @@ function Attendance() {
       user_name: "",
       code: "",
       attendances: [] as any,
+      username: "",
+      usercode: "",
     },
   ];
 
@@ -318,9 +47,8 @@ function Attendance() {
   const [act, setAct] = useState("");
   const [num, setNum] = useState(0);
   const [message, setM] = useState("유효하지 않은 출석 코드입니다.");
-  const [codeStatus, setCodeStatus] = useState(3);
-  /* const [m, setm] = useState("");
-  const [d, setd] = useState(""); */
+  const [message2, setM2] = useState("다시 입력해주세요.");
+  const [b, setArr2] = useState(arr);
 
   let N = 0;
 
@@ -361,24 +89,24 @@ function Attendance() {
     setNum(response.checkNum);
   };
 
+  const getUsers = async (m: string, d: string) => {
+    const response = await getCalendar(m, d, Number(params.clubID));
+    //console.log(response);
+    setArr2(response);
+  };
+
   useEffect(() => {
     let fmDate = moment(date).format("YYYY-MM-DD");
     const m = moment(date).format("M");
     const d = moment(date).format("D");
     setFmDate(fmDate);
     getAttendance(m, d);
+    getUsers(m, d);
     setTimeout(() => {
       pick.current.style.opacity = "1";
       pick.current.style.zIndex = "3";
     }, 100);
   }, [date]);
-
-  function checkValid() {
-    if (birth.length !== 4) {
-      alert("생일 4자리를 입력해주세요.");
-    } else {
-    }
-  }
 
   const [flag, setF] = useState<any>(0);
   /* const url = "http://172.20.10.4:8000/club/" + params.userID;
@@ -392,7 +120,7 @@ function Attendance() {
       //const url = "http://172.20.10.4:8000/club/" + params.userID;
       const response = await axios.get(url);
       resAPI = response.data;
-      console.log(resAPI);
+      //console.log(resAPI);
       setArr(resAPI.users);
       if (resAPI.users) {
         setF(1);
@@ -409,7 +137,7 @@ function Attendance() {
     setArr(resAPI.users);
     if (a.length > 0) {
       a.forEach((e) => {
-        console.log(e.attendances);
+        //console.log(e.attendances);
       });
     } else {
       console.log("yet");
@@ -426,50 +154,51 @@ function Attendance() {
       name,
       birth
     );
-    console.log(response);
+    //console.log("docheck");
+    //console.log(response);
   };
 
   const chCode = async () => {
-    const response = await codeCheck("1", "3", Number(params.clubID), code);
+    const response = await codeCheck(month, day, Number(params.clubID), code);
     //console.log(response);
     switch (response) {
       case "해당 club_attendance 없음":
         //console.log(1);
-        setCodeStatus(1);
         setM("생성된 출석 코드가 없습니다.");
+        setM2("동아리 관리자에게 문의해주세요.");
         return 1;
       case "출석 성공":
         //console.log(2);
-        setCodeStatus(2);
         setM("인증되었습니다.");
+        setM2("");
         return 2;
       case "출석코드가 다름":
         //console.log(3);
-        setCodeStatus(3);
         setM("유효하지 않은 출석 코드입니다.");
+        setM2("다시 입력해주세요.");
         return 3;
     }
   };
 
   return (
     <>
-      <Wrap>
-        <Bg>
+      <S.Wrap>
+        <S.Bg>
           <Navbar />
-          <Date>{today}</Date>
-          <Text>출석 코드를 입력하세요</Text>
-          <CodeBox
+          <S.Date>{today}</S.Date>
+          <S.Text>출석 코드를 입력하세요</S.Text>
+          <S.CodeBox
             ref={(e) => {
               box.current[0] = e;
             }}
           >
-            <Code
+            <S.Code
               type="text"
               placeholder="CODE"
               onChange={(e) => {
                 setCode(e.target.value);
               }}
-            ></Code>
+            ></S.Code>
             <span
               className="material-symbols-outlined"
               style={{
@@ -492,46 +221,46 @@ function Attendance() {
                   setTimeout(() => {
                     fail.current.style.opacity = "0";
                     fail.current.style.zIndex = "-1";
-                  }, 1500);
+                  }, 1800);
                 }
               }}
             >
               {ch}
             </span>
-          </CodeBox>
-          <InputDiv ref={success}>
-            <InputText>
+          </S.CodeBox>
+          <S.InputDiv ref={success}>
+            <S.InputText>
               {/* 인증되었습니다. */}
               {message}
-            </InputText>
-            <InputBox
+            </S.InputText>
+            <S.InputBox
               ref={(e) => {
                 box.current[1] = e;
               }}
             >
-              <Input
+              <S.Input
                 type="text"
                 placeholder="이름"
                 onChange={(e) => {
                   setName(e.target.value);
                 }}
-              ></Input>
-            </InputBox>
-            <InputBox
+              ></S.Input>
+            </S.InputBox>
+            <S.InputBox
               ref={(e) => {
                 box.current[2] = e;
               }}
             >
-              <Input
+              <S.Input
                 type="text"
                 maxLength={4}
                 placeholder="생일 4자리"
                 onChange={(e) => {
                   setBirth(e.target.value);
                 }}
-              ></Input>
-            </InputBox>
-            <Btn
+              ></S.Input>
+            </S.InputBox>
+            <S.Btn
               ref={(e) => {
                 box.current[3] = e;
               }}
@@ -547,26 +276,39 @@ function Attendance() {
                 box.current[3].style.background = "white";
               }}
               onClick={() => {
-                console.log(name, birth);
-                doCheck(month, day, Number(params.clubID), name, birth);
-                setTimeout(() => {
-                  success.current.style.opacity = "0";
-                  success.current.style.zIndex = "-1";
-                }, 200);
+                //console.log(name, birth);
+                if (
+                  window.confirm(`[${name} ${birth}] 입력하신 정보가 맞습니까?`)
+                ) {
+                  doCheck(month, day, Number(params.clubID), name, birth);
+                  setTimeout(() => {
+                    success.current.style.opacity = "0";
+                    success.current.style.zIndex = "-1";
+                  }, 200);
+                  window.location.href = `/attendance/${params.clubID}`;
+                } else {
+                  setTimeout(() => {
+                    success.current.style.opacity = "0";
+                    success.current.style.zIndex = "-1";
+                  }, 100);
+                }
               }}
             >
               출석체크
-            </Btn>
-          </InputDiv>
-          <FailDiv ref={fail}>
-            <InputText style={{ marginTop: "20px" }}>
+            </S.Btn>
+          </S.InputDiv>
+          <S.FailDiv ref={fail}>
+            <S.InputText style={{ marginTop: "20px" }}>
               {/* 유효하지 않은 출석 코드입니다. */}
               {message}
-            </InputText>
-            <InputText style={{ marginTop: "0" }}>다시 입력해주세요.</InputText>
-          </FailDiv>
-          <ChooseDiv>
-            <Ch
+            </S.InputText>
+            <S.InputText style={{ marginTop: "0" }}>
+              {message2}
+              {/* 다시 입력해주세요. */}
+            </S.InputText>
+          </S.FailDiv>
+          <S.ChooseDiv>
+            <S.Ch
               ref={(e) => {
                 or.current[0] = e;
               }}
@@ -576,12 +318,13 @@ function Attendance() {
                 or.current[1].style.color = "white";
                 or.current[2].style.opacity = "1";
                 or.current[3].style.opacity = "0";
+                or.current[4].style.zIndex = "-1";
               }}
             >
               명단으로 보기
-            </Ch>
-            <Division>|</Division>
-            <Ch
+            </S.Ch>
+            <S.Division>|</S.Division>
+            <S.Ch
               ref={(e) => {
                 or.current[1] = e;
               }}
@@ -593,9 +336,9 @@ function Attendance() {
               }}
             >
               캘린더로 보기
-            </Ch>
-          </ChooseDiv>
-          <Section
+            </S.Ch>
+          </S.ChooseDiv>
+          <S.Section
             ref={(e) => {
               or.current[2] = e;
             }}
@@ -611,19 +354,19 @@ function Attendance() {
                 navDiv[`${e.id}`] = 0;
                 return (
                   <li key={e.index}>
-                    <MemberDiv>
-                      <MemberText
+                    <S.MemberDiv>
+                      <S.MemberText
                         style={{
                           marginLeft: "7px",
                           width: "50px",
                         }}
                       >
                         {e.user_name}
-                      </MemberText>
-                      <MemberText style={{ marginRight: "5px" }}>
+                      </S.MemberText>
+                      <S.MemberText style={{ marginRight: "5px" }}>
                         {e.code}
-                      </MemberText>
-                      <MemberText
+                      </S.MemberText>
+                      <S.MemberText
                         style={{
                           width: "21px",
                           zIndex: "3",
@@ -649,8 +392,8 @@ function Attendance() {
                         >
                           navigate_before
                         </span>
-                      </MemberText>
-                      <MemberText
+                      </S.MemberText>
+                      <S.MemberText
                         style={{
                           width: "81.5px",
                           marginLeft: "0",
@@ -685,6 +428,9 @@ function Attendance() {
                                     marginRight: "5px",
                                     color: "#9ee69a",
                                   }}
+                                  onClick={() => {
+                                    alert(`${i.club_attendance.date}`);
+                                  }}
                                 >
                                   ♣
                                 </span>
@@ -700,6 +446,9 @@ function Attendance() {
                                     marginRight: "5px",
                                     color: "grey",
                                   }}
+                                  onClick={() => {
+                                    alert(`${i.club_attendance.date}`);
+                                  }}
                                 >
                                   ♣
                                 </span>
@@ -707,8 +456,8 @@ function Attendance() {
                             }
                           })}
                         </div>
-                      </MemberText>
-                      <MemberText
+                      </S.MemberText>
+                      <S.MemberText
                         style={{
                           width: "18px",
                           marginLeft: "0",
@@ -735,30 +484,30 @@ function Attendance() {
                         >
                           navigate_next
                         </span>
-                      </MemberText>
-                      <MemberText style={{ width: "50px" }}>
-                        <BarArea>
-                          <Bar
+                      </S.MemberText>
+                      <S.MemberText style={{ width: "50px" }}>
+                        <S.BarArea>
+                          <S.Bar
                             style={{
                               width: `${per}%`,
                             }}
-                          ></Bar>
-                        </BarArea>
-                      </MemberText>
-                      <MemberText style={{ textAlign: "right" }}>
+                          ></S.Bar>
+                        </S.BarArea>
+                      </S.MemberText>
+                      <S.MemberText style={{ textAlign: "right" }}>
                         {per} %
-                      </MemberText>
-                    </MemberDiv>
+                      </S.MemberText>
+                    </S.MemberDiv>
                   </li>
                 );
               })}
             </ul>
-          </Section>
-          <Section
+          </S.Section>
+          <S.Section
             ref={(e) => {
               or.current[3] = e;
             }}
-            style={{ opacity: "0" }}
+            style={{ opacity: "0", zIndex: "0" }}
           >
             <Calendar
               className="react-calendar"
@@ -771,9 +520,11 @@ function Attendance() {
               onChange={setDate}
               value={date}
             ></Calendar>
-            <PickDiv ref={pick}>
-              <InputText style={{ margin: "20px auto 0" }}>{fmDate}</InputText>
-              <InputText
+            <S.PickDiv ref={pick}>
+              <S.InputText style={{ margin: "20px auto 0" }}>
+                {fmDate}
+              </S.InputText>
+              <S.InputText
                 style={{
                   marginTop: "10px",
                   marginLeft: "53px",
@@ -781,16 +532,24 @@ function Attendance() {
                 }}
               >
                 활동 내용 : {act}
-              </InputText>
-              <InputText
+              </S.InputText>
+              <S.InputText
                 style={{
                   marginTop: "7px",
                   marginLeft: "53px",
                 }}
               >
-                출석 인원 : {num} <PickBtn>출석부</PickBtn>
-              </InputText>
-              <InputText
+                출석 인원 : {num}{" "}
+                <S.PickBtn
+                  onClick={() => {
+                    or.current[4].style.opacity = "1";
+                    or.current[4].style.zIndex = "3";
+                  }}
+                >
+                  출석부
+                </S.PickBtn>
+              </S.InputText>
+              <S.InputText
                 style={{
                   margin: "2px auto",
                 }}
@@ -799,10 +558,55 @@ function Attendance() {
                   pick.current.style.zIndex = "-3";
                 }}
               >
-                <PickBtn>닫기</PickBtn>
-              </InputText>
-            </PickDiv>
-          </Section>
+                <S.PickBtn style={{ marginLeft: "0" }}>닫기</S.PickBtn>
+              </S.InputText>
+            </S.PickDiv>
+          </S.Section>
+          <S.Section
+            ref={(e) => {
+              or.current[4] = e;
+            }}
+            style={{ background: "transparent", zIndex: "-3" }}
+          >
+            <S.listDiv
+            /* style={{
+                opacity: "0",
+                zIndex: "-1",
+              }} */
+            >
+              <ul>
+                {b &&
+                  b?.map((e: any) => {
+                    return (
+                      <li key={e.index}>
+                        <S.MemberDiv>
+                          <S.MemberText
+                            style={{
+                              marginLeft: "7px",
+                              width: "50px",
+                            }}
+                          >
+                            {e.username}
+                          </S.MemberText>
+                          <S.MemberText style={{ marginRight: "5px" }}>
+                            {e.usercode}
+                          </S.MemberText>
+                        </S.MemberDiv>
+                      </li>
+                    );
+                  })}
+              </ul>
+              <S.PickBtn
+                style={{ margin: "10px", marginBottom: "20px" }}
+                onClick={() => {
+                  or.current[4].style.opacity = "0";
+                  or.current[4].style.zIndex = "-1";
+                }}
+              >
+                닫기
+              </S.PickBtn>
+            </S.listDiv>
+          </S.Section>
           <Bottombar
             first={true}
             second={false}
@@ -810,8 +614,8 @@ function Attendance() {
             fourth={false}
             fifth={false}
           />
-        </Bg>
-      </Wrap>
+        </S.Bg>
+      </S.Wrap>
     </>
   );
 }

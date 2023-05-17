@@ -6,8 +6,12 @@
   font-weight: lighter;
   line-height: 1.125em;
   border: none;
-  margin: auto;
-  margin-top: 25px;
+  /* margin: auto;
+  margin-top: 25px; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .react-calendar--doubleView {

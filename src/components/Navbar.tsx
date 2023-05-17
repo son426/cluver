@@ -27,6 +27,7 @@ const Cluver = styled.div`
   -webkit-background-clip: text;
   color: transparent;
   z-index: 10;
+  cursor: pointer;
 `;
 
 const Leftdiv = styled.div`
@@ -42,6 +43,7 @@ const Leftdiv = styled.div`
   -webkit-background-clip: text;
   color: transparent;
   z-index: 10;
+  cursor: pointer;
 `;
 
 const MenuDiv = styled.div`
@@ -114,7 +116,9 @@ function Navbar() {
     <>
       <Container>
         <Leftdiv>♣</Leftdiv>
-        <Cluver>CLUVER</Cluver>
+        <Link to="/">
+          <Cluver>CLUVER</Cluver>
+        </Link>
         <MenuDiv
           onClick={() => {
             setN(n + 1);
