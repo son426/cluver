@@ -100,7 +100,6 @@ const Button = styled.button<{ isActive: boolean }>`
     props.isActive ? props.theme.iconColor : props.theme.bgColor};
   text-align: center;
   font-size: 13px;
-  padding-top: 7px;
   font-family: ${(props) => props.theme.textFont};
   cursor: pointer;
 `;
@@ -130,9 +129,16 @@ function AddClub() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (name !== "" && desc !== "" && (!isPrivate || code !== "")) {
-      const response = await createClub(name, desc, isPrivate, code, imgsrc);
+      const response = await createClub(
+        name,
+        desc,
+        isPrivate,
+        code,
+        imgsrc,
+        localStorage.getItem("token")
+      );
       if (response.status === 201) {
-        navigate(-1);
+        navigate("/admin");
       } else {
         console.log("error: ", response);
         errorRef.current.style.display = "block";
@@ -142,7 +148,7 @@ function AddClub() {
 
   useEffect(() => {
     if (isPrivate === true) {
-      textRef.current.style.color = "#89EC84"; //수정필요
+      textRef.current.style.color = "#89EC84";
     } else {
       textRef.current.style.color = "white";
     }
@@ -152,6 +158,7 @@ function AddClub() {
     } else {
       btnRef.current.style.background = "white";
     }
+    errorRef.current.style.display = "none";
   }, [name, desc, isPrivate, code]);
 
   return (
@@ -190,19 +197,13 @@ function AddClub() {
               />
             </InputBox>
             <RowWrapper>
-              <Button
-                isActive={!isPrivate}
-                onMouseEnter={() => {}}
-                onMouseLeave={() => {}}
-                onClick={toggle}
-              >
+              <Button type="button" isActive={!isPrivate} onClick={toggle}>
                 공개
               </Button>
               <Button
+                type="button"
                 isActive={isPrivate}
                 style={{ marginLeft: "5px" }}
-                onMouseEnter={() => {}}
-                onMouseLeave={() => {}}
                 onClick={toggle}
               >
                 비공개
@@ -231,6 +232,7 @@ function AddClub() {
                 />
               </InputBox>
               <Button
+                type="button"
                 isActive={true}
                 style={{ marginLeft: "5px" }}
                 onClick={() => {}}

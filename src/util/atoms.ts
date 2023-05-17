@@ -7,7 +7,7 @@ export interface IClub {
   description: string;
   img: string;
   status: "PUBLIC" | "PRIVATE";
-  code: string | null;
+  code: string;
 }
 
 export interface IManager {

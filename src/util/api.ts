@@ -63,21 +63,65 @@ export async function createCheckCode(
   }
 }
 
+export async function getCheckCode(month: number, day: number, clubId: number) {
+  try {
+    const response = await axios.post(`${BASE_URL}/club-attendance`, {
+      date: month + "월" + day + "일",
+      clubId: clubId,
+    });
+    return response;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
+export async function endCheck(month: number, day: number, clubId: number) {
+  try {
+    const response = await axios.post(`${BASE_URL}/club-attendance/end`, {
+      date: month + "월" + day + "일",
+      clubId: clubId,
+    });
+    return response;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
 export async function createClub(
   name: string,
   desc: string,
   isPrivate: boolean,
   code: string,
-  img: string
+  img: string,
+  token: string | null
 ) {
   try {
-    const status = isPrivate ? "PRIVATE" : "PUBLIC";
-    const response = await axios.post(`${BASE_URL}/club`, {
-      name: name,
-      img: img,
-      description: desc,
-      // status: status,
-      // code: code,
+    const response = await axios.post(
+      `${BASE_URL}/club`,
+      {
+        name: name,
+        img: img,
+        description: desc,
+        is_public: !isPrivate,
+        club_code: code,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
+export async function deleteClub(id: number, token: string | null) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/club/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
     return response;
   } catch (e: any) {

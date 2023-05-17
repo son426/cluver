@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { tokenValidate } from "../util/api";
+import { createCheckCode, getCheckCode, tokenValidate } from "../util/api";
 import { useRef } from "react";
 const Container = styled.div`
   width: 75%;
@@ -82,8 +82,9 @@ interface IProps {
   desc: string;
   img: string;
   isPrivate: boolean;
+  code: string;
 }
-function Card({ id, name, desc, img, isPrivate }: IProps) {
+function Card({ id, name, desc, img, isPrivate, code }: IProps) {
   const navigate = useNavigate();
 
   const iconRef = useRef<any>(null);
@@ -92,9 +93,47 @@ function Card({ id, name, desc, img, isPrivate }: IProps) {
   const onCreateCode = async () => {
     const response = await tokenValidate(localStorage.getItem("token"));
     if (response) {
-      navigate("/checkcode", {
-        state: { id: id, name: name, desc: desc, isPrivate: isPrivate },
-      });
+      const today = new Date();
+      const response2 = await getCheckCode(
+        today.getMonth() + 1,
+        today.getDate(),
+        id
+      );
+      if (response2.status === 200) {
+        const code = response2.data.checkCode;
+        navigate("/checkcode", {
+          state: {
+            id: id,
+            name: name,
+            desc: desc,
+            isPrivate: isPrivate,
+            checkCode: code,
+          },
+        });
+      } else if (response2.status === 201) {
+        //출석코드 생성 안 됨
+        const response3 = await createCheckCode(
+          today.getMonth() + 1,
+          today.getDate(),
+          id
+        );
+        if (response3.status === 201) {
+          const code = response3.data.checkCode;
+          navigate("/checkcode", {
+            state: {
+              id: id,
+              name: name,
+              desc: desc,
+              isPrivate: isPrivate,
+              checkCode: code,
+            },
+          });
+        } else {
+          console.log(response3);
+        }
+      } else {
+        console.log(response2);
+      }
     } else {
       navigate("/login");
       console.log(response);
@@ -111,6 +150,7 @@ function Card({ id, name, desc, img, isPrivate }: IProps) {
           desc: desc,
           img: img,
           isPrivate: isPrivate,
+          code: code,
         },
       });
     } else {
