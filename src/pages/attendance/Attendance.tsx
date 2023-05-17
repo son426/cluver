@@ -10,7 +10,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import {
   BASE_URL,
-  searchName,
   doCheck,
   codeCheck,
   getClubAttendance,
@@ -97,6 +96,8 @@ const InputDiv = styled.div`
   flex-direction: column;
   z-index: -1;
   background: ${(props) => props.theme.bgColor};
+  position: absolute;
+  top: 25vh;
 `;
 
 const InputText = styled.div`
@@ -318,6 +319,8 @@ function Attendance() {
   const [num, setNum] = useState(0);
   const [message, setM] = useState("유효하지 않은 출석 코드입니다.");
   const [codeStatus, setCodeStatus] = useState(3);
+  /* const [m, setm] = useState("");
+  const [d, setd] = useState(""); */
 
   let N = 0;
 
@@ -351,9 +354,19 @@ function Attendance() {
     }
   }, [birth]);
 
+  const getAttendance = async (m: string, d: string) => {
+    const response = await getClubAttendance(m, d, Number(params.clubID));
+    //console.log(response);
+    setAct(response.activity);
+    setNum(response.checkNum);
+  };
+
   useEffect(() => {
     let fmDate = moment(date).format("YYYY-MM-DD");
+    const m = moment(date).format("M");
+    const d = moment(date).format("D");
     setFmDate(fmDate);
+    getAttendance(m, d);
     setTimeout(() => {
       pick.current.style.opacity = "1";
       pick.current.style.zIndex = "3";
@@ -413,10 +426,11 @@ function Attendance() {
       name,
       birth
     );
+    console.log(response);
   };
 
   const chCode = async () => {
-    const response = await codeCheck("1", "1", Number(params.clubID), code);
+    const response = await codeCheck("1", "3", Number(params.clubID), code);
     //console.log(response);
     switch (response) {
       case "해당 club_attendance 없음":
@@ -437,20 +451,12 @@ function Attendance() {
     }
   };
 
-  const getAttendance = async () => {
-    const m = "1";
-    const d = "2";
-    const response = await getClubAttendance(m, d, Number(params.clubID));
-    console.log(m + "월" + d + "일");
-    console.log(response);
-  };
-
   return (
     <>
       <Wrap>
         <Bg>
           <Navbar />
-          <Date onClick={getAttendance}>{today}</Date>
+          <Date>{today}</Date>
           <Text>출석 코드를 입력하세요</Text>
           <CodeBox
             ref={(e) => {
@@ -542,6 +548,7 @@ function Attendance() {
               }}
               onClick={() => {
                 console.log(name, birth);
+                doCheck(month, day, Number(params.clubID), name, birth);
                 setTimeout(() => {
                   success.current.style.opacity = "0";
                   success.current.style.zIndex = "-1";

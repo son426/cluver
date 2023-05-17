@@ -169,6 +169,81 @@ const ResLock = styled.div`
   margin-top: 10px;
 `;
 
+const InputDiv = styled.div`
+  width: 260px;
+  height: 125px;
+  border: 1px solid white;
+  margin-top: 80px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  z-index: -1;
+  background: ${(props) => props.theme.bgColor};
+  position: absolute;
+  top: 22vh;
+`;
+
+const InputText = styled.div`
+  color: white;
+  font-size: 14px;
+  font-family: ${(props) => props.theme.textFont};
+  margin-bottom: 10px;
+  margin-top: 15px;
+  display: flex;
+`;
+
+const InputBox = styled.div`
+  width: 180px;
+  border: 1px solid white;
+  border-radius: 6px;
+  height: 30px;
+  border-radius: 7px;
+  /* border: 1px solid transparent; */
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  background-image: linear-gradient(
+      ${(props) => props.theme.bgColor},
+      ${(props) => props.theme.bgColor}
+    ),
+    ${(props) => props.theme.gradient};
+  margin-bottom: 6px;
+`;
+
+const Input = styled.input`
+  width: 180px;
+  border: 1px solid white;
+  border-radius: 7px;
+  height: 30px;
+  padding-bottom: 3px;
+  color: white;
+  font-family: ${(props) => props.theme.textFont};
+  text-align: center;
+  font-size: 13px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  ::placeholder {
+    color: ${(props) => props.theme.formColor};
+  }
+  :focus {
+    outline: none;
+  }
+`;
+
+const Btn = styled.div`
+  width: 180px;
+  border-radius: 6px;
+  height: 30px;
+  margin-bottom: 5px;
+  color: ${(props) => props.theme.bgColor};
+  background: white;
+  text-align: center;
+  font-size: 13px;
+  padding-top: 7px;
+  font-family: ${(props) => props.theme.textFont};
+  cursor: pointer;
+`;
+
 function Main() {
   /* let arr = [
     {
@@ -192,6 +267,11 @@ function Main() {
   const [a, setArr] = useState([] as any);
   //const [resAPI, getRes] = useState([]);
   var resAPI = [] as any;
+  const [code, setCode] = useState("");
+  const box = useRef<any>([]);
+  const priv = useRef<any>(null);
+  const [key, setKey] = useState("");
+  const [id, setId] = useState(0);
 
   useEffect(() => {
     if (word === "") {
@@ -231,6 +311,14 @@ function Main() {
     console.log(response);
   };
 
+  useEffect(() => {
+    if (code === "") {
+      box.current[0].style.border = "1px solid white";
+    } else {
+      box.current[0].style.border = "1px solid transparent";
+    }
+  }, [code]);
+
   return (
     <>
       <Wrap>
@@ -269,7 +357,14 @@ function Main() {
                   <li key={e.id}>
                     <Res
                       onClick={() => {
-                        window.location.href = `/attendance/${e.id}`;
+                        if (e.status === "PUBLIC") {
+                          window.location.href = `/attendance/${e.id}`;
+                        } else {
+                          priv.current.style.opacity = "1";
+                          priv.current.style.zIndex = "10";
+                          setKey(e.club_code);
+                          setId(e.id);
+                        }
                       }}
                     >
                       <ResImg>♣</ResImg>
@@ -277,7 +372,6 @@ function Main() {
                         <ResName>{e.name}</ResName>
                         <ResAbout>{e.description}</ResAbout>
                       </ResText>
-
                       <ResLock>
                         <span
                           className="material-symbols-outlined"
@@ -295,6 +389,52 @@ function Main() {
               })}
             </ul>
           </ResDiv>
+          <InputDiv ref={priv}>
+            <InputText>동아리 코드를 입력해주세요.</InputText>
+            <InputBox
+              ref={(e) => {
+                box.current[0] = e;
+              }}
+            >
+              <Input
+                type="text"
+                placeholder="동아리 코드"
+                onChange={(e) => {
+                  setCode(e.target.value);
+                }}
+              ></Input>
+            </InputBox>
+            <Btn
+              ref={(e) => {
+                box.current[1] = e;
+              }}
+              onMouseEnter={() => {
+                if (code !== "") {
+                  box.current[1].style.background =
+                    "linear-gradient(135deg, #89ec84 0%, #abc0e4 55%, #abc0e4 83%, #c7d5ed 100%)";
+                } else {
+                  box.current[1].style.background = "white";
+                }
+              }}
+              onMouseLeave={() => {
+                box.current[1].style.background = "white";
+              }}
+              onClick={() => {
+                console.log(code);
+                if (code === key) {
+                  window.location.href = `/attendance/${id}`;
+                } else {
+                  alert("올바르지 않은 코드입니다. 다시 입력해주세요.");
+                  setTimeout(() => {
+                    priv.current.style.opacity = "0";
+                    priv.current.style.zIndex = "-1";
+                  }, 200);
+                }
+              }}
+            >
+              코드 확인
+            </Btn>
+          </InputDiv>
           <Bottombar
             first={false}
             second={false}
