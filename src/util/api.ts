@@ -117,3 +117,41 @@ export async function searchName(name: string) {
     return false;
   }
 }
+
+export async function codeCheck(
+  month: string,
+  day: string,
+  clubId: number,
+  code: string
+) {
+  try {
+    const response = await axios.post(`${BASE_URL}/club-attendance/codecheck`, {
+      date: month + "월" + day + "일",
+      clubId: clubId,
+      code: code,
+    });
+    return response.data;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
+export async function getClubAttendance(
+  month: string,
+  day: string,
+  clubId: number
+) {
+  try {
+    const response = await axios.get(`${BASE_URL}/club-attendance`, {
+      params: {
+        date: month + "월" + day + "일",
+        clubId: clubId,
+      },
+    });
+    return response.data;
+  } catch (e: any) {
+    console.log("error: ", e);
+    return false;
+  }
+}
