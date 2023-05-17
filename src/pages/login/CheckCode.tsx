@@ -2,10 +2,9 @@ import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import SimpleCard from "../../components/SimpleCard";
-import { useLocation } from "react-router";
-import { useEffect, useState } from "react";
-import { createCheckCode } from "../../util/api";
-import { useRecoilState } from "recoil";
+import { useLocation, useNavigate } from "react-router";
+import { endCheck } from "../../util/api";
+import { useRef } from "react";
 
 const Background = styled.div`
   width: 100vw;
@@ -61,10 +60,41 @@ const TextWrapper = styled.div`
   }
 `;
 const Text = styled.div`
+  color: ${(props) => props.theme.iconColor};
+  margin-bottom: 20px;
+  font-size: 13px;
   :hover {
     color: ${(props) => props.theme.accentColor};
     transition: all ease 0.3s;
     cursor: pointer;
+  }
+`;
+const ModalBg = styled.div`
+  display: none; //flex
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  position: fixed;
+  justify-content: center;
+`;
+const Modal = styled.div`
+  width: 80%;
+  border: 1px solid white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 40%;
+  background: ${(props) => props.theme.bgColor};
+  transition: all ease 0.3s;
+`;
+const SmallText = styled.div`
+  :hover {
+    color: ${(props) => props.theme.accentColor};
+    transition: all ease 0.3s;
   }
 `;
 
@@ -74,42 +104,61 @@ interface IRouterState {
     name: string;
     desc: string;
     isPrivate: boolean;
+    checkCode: string;
   };
 }
 function CheckCode() {
+  const navigate = useNavigate();
+  const modalRef = useRef<any>(null);
   const { state } = useLocation() as IRouterState;
   let today = new Date();
   let year = today.getFullYear();
   let month = ("0" + (today.getMonth() + 1)).slice(-2);
   let day = ("0" + today.getDate()).slice(-2);
 
-  const [code, setCode] = useState<string>("…");
-
-  const getCode = async () => {
-    const response = await createCheckCode(
+  const onEndCheck = async () => {
+    const today = new Date();
+    const response = await endCheck(
       today.getMonth() + 1,
       today.getDate(),
       state.id
     );
     if (response.status === 201) {
-      setCode(response.data.checkCode);
+      const code = response.data.checkCode;
+      navigate("/admin");
+    } else {
+      console.log(response);
     }
   };
-  const onEndCheck = () => {};
-  useEffect(() => {
-    getCode();
-  }, []);
+
+  //뒤로가기 막기 / 뒤로가기 하면 자동 출석마감
 
   return (
     <Background>
       <Wrap>
         <Navbar></Navbar>
         <Container>
+          <ModalBg ref={modalRef}>
+            <Modal>
+              <Text>출석을 마감하시겠습니까?</Text>
+              <TextWrapper>
+                <SmallText onClick={onEndCheck}>마감하기</SmallText>
+                <span>|</span>
+                <SmallText
+                  onClick={() => {
+                    modalRef.current.style.display = "none";
+                  }}
+                >
+                  취소
+                </SmallText>
+              </TextWrapper>
+            </Modal>
+          </ModalBg>
           <Title>
             {year}-{month}-{day}
           </Title>
           <Title>출석 코드</Title>
-          <CodeText>{code}</CodeText>
+          <CodeText>{state.checkCode}</CodeText>
           <SimpleCard
             name={state.name}
             desc={state.desc}
@@ -117,7 +166,13 @@ function CheckCode() {
             chosen={false}
           />
           <TextWrapper style={{ position: "absolute", bottom: "20px" }}>
-            <Text onClick={onEndCheck}>출석 마감하기</Text>
+            <Text
+              onClick={() => {
+                modalRef.current.style.display = "flex";
+              }}
+            >
+              출석 마감하기
+            </Text>
           </TextWrapper>
         </Container>
         <Bottombar

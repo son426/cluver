@@ -51,7 +51,7 @@ const Title = styled.span`
 `;
 
 const AddButton = styled.div`
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
   font-family: ${(props) => props.theme.textFont};
   background: ${(props) => props.theme.gradient};
@@ -82,6 +82,29 @@ const Text = styled.div`
     cursor: pointer;
   }
 `;
+const CardContainer = styled.div`
+  width: 96%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: red; */
+  max-height: 50%;
+  overflow-y: scroll;
+  margin: 10px auto;
+  ::-webkit-scrollbar {
+    width: 7px;
+  }
+  ::-webkit-scrollbar-track {
+    background: ${(props) => props.theme.boxColor};
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: ${(props) => props.theme.gradient};
+    border-radius: 10px;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+`;
 
 function Login() {
   const navigate = useNavigate();
@@ -106,7 +129,6 @@ function Login() {
       console.log(response);
     }
   };
-
   const getClubsData = async () => {
     const response = await getClubs(localStorage.getItem("token"));
     if (response) {
@@ -134,20 +156,22 @@ function Login() {
               <Title> 님이 관리 중인 동아리입니다.</Title>
             )}
           </div>
-
-          {clubs.map((club: any) => {
-            if (club)
-              return (
-                <Card
-                  key={club.id}
-                  id={club.id}
-                  name={club.name.toUpperCase()}
-                  desc={club.description}
-                  img={club.img}
-                  isPrivate={club.status == "PRIVATE" ? true : false}
-                />
-              );
-          })}
+          <CardContainer>
+            {clubs.map((club: any) => {
+              if (club)
+                return (
+                  <Card
+                    key={club.id}
+                    id={club.id}
+                    name={club.name.toUpperCase()}
+                    desc={club.description}
+                    img={club.img}
+                    isPrivate={club.status == "PRIVATE" ? true : false}
+                    code={club.code}
+                  />
+                );
+            })}
+          </CardContainer>
           <AddButton onClick={onAddClub}>관리 중인 동아리 추가하기 +</AddButton>
           {clubs.length == 0 ? (
             <></>
