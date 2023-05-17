@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = `http://34.64.184.11:8000`;
+export const BASE_URL = `http://34.64.184.11:8000`;
 
 export async function loginValidate(id: string, password: string) {
   try {
@@ -17,7 +17,6 @@ export async function loginValidate(id: string, password: string) {
     console.log(e);
   }
 }
-
 export async function getClubs(token: string | null) {
   try {
     const response = await axios.get(`${BASE_URL}/club/my`, {
@@ -83,5 +82,38 @@ export async function createClub(
   } catch (e: any) {
     console.log(e);
     return e.response.data.message;
+  }
+}
+
+export async function doCheck(
+  month: string,
+  day: string,
+  clubId: number,
+  username: string,
+  usercode: string
+) {
+  try {
+    const response = await axios.post(`${BASE_URL}/club-attendance/docheck`, {
+      date: month + "월" + day + "일",
+      clubId: clubId,
+      username: username,
+      usercode: usercode,
+    });
+    return response;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
+export async function searchName(name: string) {
+  try {
+    const response = await axios.get(`${BASE_URL}/search`, {
+      params: { name: name },
+    });
+    return response.data;
+  } catch (e: any) {
+    console.log("error: ", e);
+    return false;
   }
 }

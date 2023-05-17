@@ -8,6 +8,8 @@ import moment from "moment";
 import "./Calendar.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL, searchName } from "../../util/api";
+import { doCheck } from "../../util/api";
 
 const Wrap = styled.div`
   width: 360px;
@@ -306,6 +308,11 @@ function Attendance() {
   const [fmDate, setFmDate] = useState(date);
   const pick = useRef<any>();
   let resAPI = [] as any;
+  const clovers = useRef<any>([]);
+  const [act, setAct] = useState("");
+  const [num, setNum] = useState(0);
+
+  let N = 0;
 
   const key = "1234";
   const today = moment().format("YYYY-MM-DD");
@@ -361,7 +368,8 @@ function Attendance() {
 
   const Api = async () => {
     try {
-      const url = "http://172.20.10.4:8000/club/" + params.userID;
+      const url = BASE_URL + "/club/" + params.clubID;
+      //const url = "http://172.20.10.4:8000/club/" + params.userID;
       const response = await axios.get(url);
       resAPI = response.data;
       console.log(resAPI);
@@ -387,6 +395,18 @@ function Attendance() {
       console.log("yet");
     }
   }, [flag]);
+
+  const month = moment().format("M");
+  const day = moment().format("D");
+  const docheck = async () => {
+    const response = await doCheck(
+      month,
+      day,
+      Number(params.clubID),
+      name,
+      birth
+    );
+  };
 
   return (
     <>
@@ -480,10 +500,11 @@ function Attendance() {
                 box.current[3].style.background = "white";
               }}
               onClick={() => {
+                console.log(name, birth);
                 setTimeout(() => {
                   success.current.style.opacity = "0";
                   success.current.style.zIndex = "-1";
-                }, 100);
+                }, 200);
               }}
             >
               출석체크
@@ -533,10 +554,14 @@ function Attendance() {
           >
             <ul>
               {a?.map((e: any) => {
+                N = 0;
+                let div = 1;
                 let ct = 0;
                 let per = Math.round((ct / e.attendances.length) * 100);
+                let navDiv = [] as any;
+                navDiv[`${e.id}`] = 0;
                 return (
-                  <li>
+                  <li key={e.index}>
                     <MemberDiv>
                       <MemberText
                         style={{
@@ -552,6 +577,7 @@ function Attendance() {
                       <MemberText
                         style={{
                           width: "21px",
+                          zIndex: "3",
                         }}
                       >
                         <span
@@ -561,95 +587,77 @@ function Attendance() {
                             lineHeight: "12px",
                             cursor: "pointer",
                           }}
+                          onClick={() => {
+                            if (navDiv[`${e.id}`] > 0) {
+                              navDiv[`${e.id}`] -= 1;
+                            }
+                            //console.log(navDiv[`${e.id}`]);
+                            let how = navDiv[`${e.id}`] * 83.2;
+                            clovers.current[
+                              `${e.id}`
+                            ].style.transform = `translateX(-${how}px)`;
+                          }}
                         >
                           navigate_before
                         </span>
                       </MemberText>
                       <MemberText
                         style={{
-                          width: "85px",
+                          width: "81.5px",
                           marginLeft: "0",
                           color: "grey",
                           fontFamily: "copperplate",
                           fontSize: "17px",
                           paddingTop: "7px",
+                          overflow: "hidden",
                         }}
                       >
-                        {e.attendances?.map((i: any) => {
-                          if (i.isChecked === true) {
-                            ct++;
-                            per = Math.round((ct / e.attendances.length) * 100);
-                            return (
-                              <span
-                                style={{
-                                  cursor: "pointer",
-                                  marginRight: "5px",
-                                  color: "#9ee69a",
-                                }}
-                              >
-                                ♣
-                              </span>
-                            );
-                          } else {
-                            per = Math.round((ct / e.attendances.length) * 100);
-                            return (
-                              <span
-                                style={{
-                                  cursor: "pointer",
-                                  marginRight: "5px",
-                                  color: "grey",
-                                }}
-                              >
-                                ♣
-                              </span>
-                            );
-                          }
-                        })}
-                        {/* <span
-                          style={{
-                            cursor: "pointer",
-                            marginRight: "5px",
-                            color: "#9ee69a",
+                        <div
+                          ref={(ele) => {
+                            clovers.current[`${e.id}`] = ele;
                           }}
+                          style={{ width: "fit-content" }}
                         >
-                          ♣
-                        </span>
-                        <span
-                          style={{
-                            cursor: "pointer",
-                            marginRight: "5px",
-                            color: "#9ee69a",
-                          }}
-                        >
-                          ♣
-                        </span>
-                        <span
-                          style={{
-                            cursor: "pointer",
-                            marginRight: "5px",
-                            color: "grey",
-                          }}
-                        >
-                          ♣
-                        </span>
-                        <span
-                          style={{
-                            cursor: "pointer",
-                            marginRight: "5px",
-                            color: "grey",
-                          }}
-                        >
-                          ♣
-                        </span>
-                        <span
-                          style={{
-                            cursor: "pointer",
-                            marginRight: "1px",
-                            color: "#9ee69a",
-                          }}
-                        >
-                          ♣
-                        </span> */}
+                          {e.attendances?.map((i: any) => {
+                            N += 1;
+                            div = N / 5;
+                            /* if (N % 5 !== 0) {
+                              div += 1;
+                            } */
+                            if (i.isChecked === true) {
+                              ct++;
+                              per = Math.round(
+                                (ct / e.attendances.length) * 100
+                              );
+                              return (
+                                <span
+                                  style={{
+                                    cursor: "pointer",
+                                    marginRight: "5px",
+                                    color: "#9ee69a",
+                                  }}
+                                >
+                                  ♣
+                                </span>
+                              );
+                            } else {
+                              per = Math.round(
+                                (ct / e.attendances.length) * 100
+                              );
+                              return (
+                                <span
+                                  style={{
+                                    cursor: "pointer",
+                                    marginRight: "5px",
+                                    color: "grey",
+                                  }}
+                                >
+                                  ♣
+                                </span>
+                              );
+                            }
+                          })}
+                        </div>
                       </MemberText>
                       <MemberText
                         style={{
@@ -663,6 +671,17 @@ function Attendance() {
                           style={{
                             fontSize: "22px",
                             lineHeight: "12px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            if (navDiv[`${e.id}`] < div - 1) {
+                              navDiv[`${e.id}`] += 1;
+                            }
+                            //console.log(navDiv[`${e.id}`]);
+                            let how = navDiv[`${e.id}`] * 83.2;
+                            clovers.current[
+                              `${e.id}`
+                            ].style.transform = `translateX(-${how}px)`;
                           }}
                         >
                           navigate_next
@@ -699,7 +718,7 @@ function Attendance() {
               maxDetail="month"
               next2Label={null}
               prev2Label={null}
-              formatDay={(locale, date) => moment(date).format("DD")}
+              formatDay={(locale, date) => moment(date).format("D")}
               onChange={setDate}
               value={date}
             ></Calendar>
@@ -712,7 +731,7 @@ function Attendance() {
                   marginBottom: "0",
                 }}
               >
-                활동 내용 : 정기 회합
+                활동 내용 : {act}
               </InputText>
               <InputText
                 style={{
@@ -720,7 +739,7 @@ function Attendance() {
                   marginLeft: "53px",
                 }}
               >
-                출석 인원 : 12 <PickBtn>출석부</PickBtn>
+                출석 인원 : {num} <PickBtn>출석부</PickBtn>
               </InputText>
               <InputText
                 style={{

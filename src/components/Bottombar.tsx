@@ -13,6 +13,8 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   font-family: ${(props) => props.theme.textFont};
+  background: ${(props) => props.theme.bgColor};
+  z-index: 10;
 `;
 
 const IconDiv = styled.div`
@@ -83,7 +85,7 @@ function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
       <Container>
         <IconDiv>
           <Icon isActive={first}>
-            <Link to="/attendance">
+            <Link to="/">
               <span
                 className="material-symbols-outlined"
                 style={{

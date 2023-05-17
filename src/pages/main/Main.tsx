@@ -5,6 +5,7 @@ import Bottombar from "../../components/Bottombar";
 import logo from "../../assets/images/logo.png";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { BASE_URL, searchName } from "../../util/api";
 
 const Wrap = styled.div`
   width: 360px;
@@ -84,10 +85,19 @@ const SearchIcon = styled.div`
 
 const ResDiv = styled.div`
   width: 230px;
-  height: 200px;
+  height: 180px;
   margin-top: 7px;
   opacity: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  ::-webkit-scrollbar {
+    width: 5px;
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: ${(props) => props.theme.gradient};
+    border-radius: 5px;
+  }
 `;
 
 const Res = styled.div`
@@ -97,6 +107,8 @@ const Res = styled.div`
   font-size: 12px;
   font-family: ${(props) => props.theme.textFont};
   cursor: pointer;
+  position: relative;
+  display: flex;
 `;
 
 const ResImg = styled.div`
@@ -111,17 +123,27 @@ const ResImg = styled.div`
   font-family: ${(props) => props.theme.titleFont};
   margin: 5px;
   margin-top: 8px;
-  position: absolute;
+  //position: absolute;
   :hover {
     cursor: pointer;
   }
 `;
 
+const ResText = styled.div`
+  width: 155px;
+  height: 46px;
+  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  padding-left: 3px;
+`;
+
 const ResName = styled.div`
-  width: 160px;
+  width: 150px;
   height: fit-content;
+  height: 13px;
   font-size: 13px;
-  margin-left: 45px;
+  //margin-left: 45px;
   margin-bottom: 3px;
   margin-top: 8px;
   display: inline-block;
@@ -131,8 +153,8 @@ const ResName = styled.div`
 `;
 
 const ResAbout = styled.div`
-  width: 160px;
-  margin-left: 45px;
+  width: 150px;
+  //margin-left: 45px;
   height: fit-content;
   font-weight: lighter;
   display: inline;
@@ -141,13 +163,14 @@ const ResAbout = styled.div`
 const ResLock = styled.div`
   width: 20px;
   height: 20px;
-  position: absolute;
-  margin-left: 200px;
-  margin-top: -25px;
+  //position: absolute;
+  //margin-left: 200px;
+  //margin-top: -25px;
+  margin-top: 10px;
 `;
 
 function Main() {
-  let arr = [
+  /* let arr = [
     {
       name: "HOMEBREW",
       img: "logo",
@@ -162,11 +185,11 @@ function Main() {
       about: "괴발개발 동아리",
       lock: "lock",
     },
-  ];
+  ]; */
   const search = useRef<any>(null);
   const res = useRef<any>(null);
   const [word, setWord] = useState("");
-  const [a, setArr] = useState(arr);
+  const [a, setArr] = useState([] as any);
   //const [resAPI, getRes] = useState([]);
   var resAPI = [] as any;
 
@@ -175,6 +198,7 @@ function Main() {
       search.current.style.border = "1px solid white";
       res.current.style.opacity = "0";
     } else {
+      searchClub();
       search.current.style.border = "1px solid transparent";
       res.current.style.opacity = "1";
     }
@@ -199,6 +223,12 @@ function Main() {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const searchClub = async () => {
+    const response = await searchName(word);
+    setArr(response);
+    console.log(response);
   };
 
   return (
@@ -230,26 +260,39 @@ function Main() {
           </SearchBox>
           <ResDiv ref={res}>
             <ul>
-              {a.map((e) => (
-                <li>
-                  <Res onClick={Api}>
-                    <ResImg>♣</ResImg>
-                    <ResName>{e.name}</ResName>
-                    <ResAbout>{e.about}</ResAbout>
-                    <ResLock>
-                      <span
-                        className="material-symbols-outlined"
-                        style={{
-                          fontSize: "15px",
-                          fontVariationSettings: "'FILL' 1",
-                        }}
-                      >
-                        {e.lock}
-                      </span>
-                    </ResLock>
-                  </Res>
-                </li>
-              ))}
+              {a?.map((e: any) => {
+                let lock = "lock";
+                if (e.status === "PUBLIC") {
+                  lock = "lock_open_right";
+                }
+                return (
+                  <li key={e.id}>
+                    <Res
+                      onClick={() => {
+                        window.location.href = `/attendance/${e.id}`;
+                      }}
+                    >
+                      <ResImg>♣</ResImg>
+                      <ResText>
+                        <ResName>{e.name}</ResName>
+                        <ResAbout>{e.description}</ResAbout>
+                      </ResText>
+
+                      <ResLock>
+                        <span
+                          className="material-symbols-outlined"
+                          style={{
+                            fontSize: "15px",
+                            fontVariationSettings: "'FILL' 1",
+                          }}
+                        >
+                          {lock}
+                        </span>
+                      </ResLock>
+                    </Res>
+                  </li>
+                );
+              })}
             </ul>
           </ResDiv>
           <Bottombar
