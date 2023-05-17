@@ -99,7 +99,7 @@ export async function doCheck(
       username: username,
       usercode: usercode,
     });
-    return response;
+    return response.data;
   } catch (e: any) {
     console.log(e);
     return e.response.data.message;
@@ -143,11 +143,9 @@ export async function getClubAttendance(
   clubId: number
 ) {
   try {
-    const response = await axios.get(`${BASE_URL}/club-attendance`, {
-      params: {
-        date: month + "월" + day + "일",
-        clubId: clubId,
-      },
+    const response = await axios.post(`${BASE_URL}/club-attendance`, {
+      date: month + "월" + day + "일",
+      clubId: clubId,
     });
     return response.data;
   } catch (e: any) {
