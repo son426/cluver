@@ -85,7 +85,7 @@ function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
       <Container>
         <IconDiv>
           <Icon isActive={first}>
-            <Link to="/attendance">
+            <Link to="/">
               <span
                 className="material-symbols-outlined"
                 style={{

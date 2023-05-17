@@ -8,7 +8,7 @@ import moment from "moment";
 import "./Calendar.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL } from "../../util/api";
+import { BASE_URL, searchName } from "../../util/api";
 import { doCheck } from "../../util/api";
 
 const Wrap = styled.div`
@@ -309,6 +309,8 @@ function Attendance() {
   const pick = useRef<any>();
   let resAPI = [] as any;
   const clovers = useRef<any>([]);
+  const [act, setAct] = useState("");
+  const [num, setNum] = useState(0);
 
   let N = 0;
 
@@ -498,10 +500,11 @@ function Attendance() {
                 box.current[3].style.background = "white";
               }}
               onClick={() => {
+                console.log(name, birth);
                 setTimeout(() => {
                   success.current.style.opacity = "0";
                   success.current.style.zIndex = "-1";
-                }, 100);
+                }, 200);
               }}
             >
               출석체크
@@ -728,7 +731,7 @@ function Attendance() {
                   marginBottom: "0",
                 }}
               >
-                활동 내용 : 정기 회합
+                활동 내용 : {act}
               </InputText>
               <InputText
                 style={{
@@ -736,7 +739,7 @@ function Attendance() {
                   marginLeft: "53px",
                 }}
               >
-                출석 인원 : 12 <PickBtn>출석부</PickBtn>
+                출석 인원 : {num} <PickBtn>출석부</PickBtn>
               </InputText>
               <InputText
                 style={{

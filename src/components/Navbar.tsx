@@ -146,7 +146,7 @@ function Navbar() {
               setN(1);
             }}
           >
-            <Link to="/attendance">
+            <Link to="/">
               <span style={{ cursor: "pointer" }}>출석 체크</span>
             </Link>
           </DropMenu>

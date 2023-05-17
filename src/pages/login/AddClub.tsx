@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createClub } from "../../util/api";
+import { useNavigate } from "react-router-dom";
 
 const Background = styled.div`
   width: 100vw;
@@ -22,24 +24,27 @@ const Container = styled.div`
   width: 100%;
   height: 77%;
   transform: translateY(10%);
-  //background-color: red;
+  /* background-color: red; */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
+const Form = styled.form`
+  width: 70%;
+`;
 const RowWrapper = styled.div`
-  width: 60%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `;
-const Text = styled.span`
+const Text = styled.div`
+  margin-bottom: 3px;
   font-size: 10px;
   font-weight: lighter;
   font-family: ${(props) => props.theme.textFont};
   color: ${(props) => props.theme.iconColor};
-  margin-bottom: 5px;
 `;
 const WarningText = styled.span`
   font-size: 10px;
@@ -49,7 +54,7 @@ const WarningText = styled.span`
   transform: translate(5px, 2px);
 `;
 const InputBox = styled.div`
-  width: 60%;
+  width: 100%;
   min-width: 150px;
   border: 1px solid white;
   border-radius: 6px;
@@ -83,8 +88,8 @@ const Input = styled.input`
     outline: none;
   }
 `;
-const Button = styled.div<{ isActive: boolean }>`
-  width: 60%;
+const Button = styled.button<{ isActive: boolean }>`
+  width: 100%;
   border: 1px solid white;
   border-radius: 6px;
   height: 30px;
@@ -99,80 +104,145 @@ const Button = styled.div<{ isActive: boolean }>`
   font-family: ${(props) => props.theme.textFont};
   cursor: pointer;
 `;
+const Error = styled.span`
+  font-size: 10px;
+  color: #d23535;
+  display: none;
+  margin-bottom: 5px;
+`;
 
 function AddClub() {
+  const navigate = useNavigate();
+
+  const textRef = useRef<any>(null);
+  const btnRef = useRef<any>(null);
+  const errorRef = useRef<any>(null);
+
+  const [name, setName] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
   const [isPrivate, setIsPrivate] = useState(false);
+  const [code, setCode] = useState<string>("");
+  const [imgsrc, setImgsrc] = useState<string>("");
+
   const toggle = () => {
     setIsPrivate((prev) => !prev);
   };
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (name !== "" && desc !== "" && (!isPrivate || code !== "")) {
+      const response = await createClub(name, desc, isPrivate, code, imgsrc);
+      if (response.status === 201) {
+        navigate(-1);
+      } else {
+        console.log("error: ", response);
+        errorRef.current.style.display = "block";
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isPrivate === true) {
+      textRef.current.style.color = "#89EC84"; //수정필요
+    } else {
+      textRef.current.style.color = "white";
+    }
+    if (name !== "" && desc !== "" && (!isPrivate || code !== "")) {
+      btnRef.current.style.background =
+        "linear-gradient(135deg, #89ec84 0%, #abc0e4 55%, #abc0e4 83%, #c7d5ed 100%)";
+    } else {
+      btnRef.current.style.background = "white";
+    }
+  }, [name, desc, isPrivate, code]);
+
   return (
     <Background>
       <Wrap>
         <Navbar></Navbar>
         <Container>
-          <InputBox>
-            <WarningText>*</WarningText>
-            <Input type="text" placeholder="동아리 이름" onChange={(e) => {}} />
-          </InputBox>
-          <InputBox style={{ minHeight: "50px" }}>
-            <WarningText>*</WarningText>
-            <Input
-              as="textarea"
-              maxLength={30}
-              style={{ resize: "none" }}
-              placeholder="동아리 소개"
-              onChange={(e) => {}}
-            />
-          </InputBox>
-          <RowWrapper>
-            <Button
-              isActive={!isPrivate}
-              onMouseEnter={() => {}}
-              onMouseLeave={() => {}}
-              onClick={toggle}
-            >
-              공개
-            </Button>
-            <Button
-              isActive={isPrivate}
-              style={{ marginLeft: "5px" }}
-              onMouseEnter={() => {}}
-              onMouseLeave={() => {}}
-              onClick={toggle}
-            >
-              비공개
-            </Button>
-          </RowWrapper>
-          <Text>※ 비공개 설정 시 동아리 코드 입력 필요</Text>
-          <InputBox>
-            <Input type="text" placeholder="동아리 코드" onChange={(e) => {}} />
-          </InputBox>
-          <RowWrapper>
+          <Form onSubmit={onSubmit}>
+            <InputBox>
+              <WarningText>*</WarningText>
+              <Input
+                type="text"
+                placeholder="동아리 이름"
+                value={name}
+                onChange={(e) => {
+                  setName(e.currentTarget.value);
+                }}
+              />
+            </InputBox>
+            <InputBox style={{ minHeight: "50px" }}>
+              <WarningText>*</WarningText>
+              <Input
+                as="textarea"
+                aria-rowspan={2}
+                maxLength={48}
+                style={{
+                  resize: "none",
+                  overflow: "hidden",
+                  transform: "translateY(45%)",
+                }}
+                placeholder="동아리 소개"
+                value={desc}
+                onChange={(e) => {
+                  setDesc(e.currentTarget.value);
+                }}
+              />
+            </InputBox>
+            <RowWrapper>
+              <Button
+                isActive={!isPrivate}
+                onMouseEnter={() => {}}
+                onMouseLeave={() => {}}
+                onClick={toggle}
+              >
+                공개
+              </Button>
+              <Button
+                isActive={isPrivate}
+                style={{ marginLeft: "5px" }}
+                onMouseEnter={() => {}}
+                onMouseLeave={() => {}}
+                onClick={toggle}
+              >
+                비공개
+              </Button>
+            </RowWrapper>
+            <Text ref={textRef}>※ 비공개 설정 시 동아리 코드 입력 필요</Text>
             <InputBox>
               <Input
                 type="text"
-                placeholder="동아리 프로필 사진"
-                onChange={(e) => {}}
+                placeholder="동아리 코드"
+                value={code}
+                onChange={(e) => {
+                  setCode(e.currentTarget.value);
+                }}
               />
             </InputBox>
-            <Button
-              isActive={true}
-              style={{ marginLeft: "5px" }}
-              onMouseEnter={() => {}}
-              onMouseLeave={() => {}}
-              onClick={() => {}}
-            >
-              등록
+            <RowWrapper>
+              <InputBox>
+                <Input
+                  type="text"
+                  placeholder="동아리 프로필 사진"
+                  value={imgsrc}
+                  onChange={(e) => {
+                    setImgsrc(e.currentTarget.value);
+                  }}
+                />
+              </InputBox>
+              <Button
+                isActive={true}
+                style={{ marginLeft: "5px" }}
+                onClick={() => {}}
+              >
+                등록
+              </Button>
+            </RowWrapper>
+            <Error ref={errorRef}>* 유효하지 않습니다</Error>
+            <Button type="submit" ref={btnRef} isActive={true}>
+              동아리 추가
             </Button>
-          </RowWrapper>
-          <Button
-            isActive={true}
-            onMouseEnter={() => {}}
-            onMouseLeave={() => {}}
-            onClick={() => {}}
-          >
-            동아리 추가
-          </Button>
+          </Form>
         </Container>
         <Bottombar
           first={false}

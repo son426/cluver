@@ -3,9 +3,10 @@ import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import Card from "../../components/Card";
 import { Link, useNavigate } from "react-router-dom";
-import { tokenValidate } from "../../util/api";
+import { getClubs, tokenValidate } from "../../util/api";
 import { useRecoilValue } from "recoil";
-import { manager } from "../../util/atoms";
+import { IClub, manager } from "../../util/atoms";
+import { useEffect, useState } from "react";
 
 const Background = styled.div`
   width: 100vw;
@@ -85,6 +86,7 @@ const Text = styled.div`
 function Login() {
   const navigate = useNavigate();
   const data = useRecoilValue(manager);
+  const [clubs, setClubs] = useState<IClub[]>([]);
 
   const onAddClub = async () => {
     const response = await tokenValidate(localStorage.getItem("token"));
@@ -104,6 +106,21 @@ function Login() {
       console.log(response);
     }
   };
+
+  const getClubsData = async () => {
+    const response = await getClubs(localStorage.getItem("token"));
+    if (response) {
+      console.log(response);
+      setClubs(response);
+    } else {
+      navigate("/login");
+      console.log(response);
+    }
+  };
+  useEffect(() => {
+    getClubsData();
+  }, []);
+
   return (
     <Background>
       <Wrap>
@@ -111,14 +128,14 @@ function Login() {
         <Container>
           <div style={{ marginBottom: "10px" }}>
             <UserName>{data.name}</UserName>
-            {data.clubs.length == 0 ? (
+            {clubs.length == 0 ? (
               <Title> 님이 관리 중인 동아리가 없습니다.</Title>
             ) : (
               <Title> 님이 관리 중인 동아리입니다.</Title>
             )}
           </div>
 
-          {data.clubs.map((club: any) => {
+          {clubs.map((club: any) => {
             if (club)
               return (
                 <Card
@@ -132,7 +149,7 @@ function Login() {
               );
           })}
           <AddButton onClick={onAddClub}>관리 중인 동아리 추가하기 +</AddButton>
-          {data.clubs.length == 0 ? (
+          {clubs.length == 0 ? (
             <></>
           ) : (
             <TextWrapper style={{ position: "absolute", bottom: "20px" }}>

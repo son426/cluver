@@ -8,12 +8,24 @@ export async function loginValidate(id: string, password: string) {
       id: id,
       password: password,
     });
+    console.log(response);
     const token = response.data.accessToken;
     localStorage.setItem("token", token);
     return response;
   } catch (e: any) {
     return e.response.data.message;
     console.log(e);
+  }
+}
+export async function getClubs(token: string | null) {
+  try {
+    const response = await axios.get(`${BASE_URL}/club/my`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (e: any) {
+    console.log("error: ", e);
+    return false;
   }
 }
 
@@ -40,8 +52,32 @@ export async function createCheckCode(
       {
         date: month + "월" + day + "일",
         clubId: clubId,
+        activity: "정기회합",
       }
     );
+    return response;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
+export async function createClub(
+  name: string,
+  desc: string,
+  isPrivate: boolean,
+  code: string,
+  img: string
+) {
+  try {
+    const status = isPrivate ? "PRIVATE" : "PUBLIC";
+    const response = await axios.post(`${BASE_URL}/club`, {
+      name: name,
+      img: img,
+      description: desc,
+      // status: status,
+      // code: code,
+    });
     return response;
   } catch (e: any) {
     console.log(e);
@@ -67,5 +103,17 @@ export async function doCheck(
   } catch (e: any) {
     console.log(e);
     return e.response.data.message;
+  }
+}
+
+export async function searchName(name: string) {
+  try {
+    const response = await axios.get(`${BASE_URL}/search`, {
+      params: { name: name },
+    });
+    return response.data;
+  } catch (e: any) {
+    console.log("error: ", e);
+    return false;
   }
 }
