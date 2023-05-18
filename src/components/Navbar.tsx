@@ -168,24 +168,40 @@ function Navbar() {
           >
             <span style={{ cursor: "pointer" }}>그룹 관리</span>
           </DropMenu>
-          <DropMenu
-            onClick={() => {
-              setN(1);
-            }}
-          >
-            <Link to="/login">
-              <span style={{ cursor: "pointer" }}>로그인</span>
-            </Link>
-          </DropMenu>
-          <DropMenu
-            onClick={() => {
-              setN(1);
-            }}
-          >
-            <Link to="/signup">
-              <span style={{ cursor: "pointer" }}>회원가입</span>
-            </Link>
-          </DropMenu>
+          {!!localStorage.getItem("token") ? (
+            <DropMenu
+              onClick={() => {
+                setN(1);
+                localStorage.removeItem("token");
+                localStorage.removeItem("manager");
+              }}
+            >
+              <Link to="/login">
+                <span style={{ cursor: "pointer" }}>로그아웃</span>
+              </Link>
+            </DropMenu>
+          ) : (
+            <>
+              <DropMenu
+                onClick={() => {
+                  setN(1);
+                }}
+              >
+                <Link to="/login">
+                  <span style={{ cursor: "pointer" }}>로그인</span>
+                </Link>
+              </DropMenu>
+              <DropMenu
+                onClick={() => {
+                  setN(1);
+                }}
+              >
+                <Link to="/signup">
+                  <span style={{ cursor: "pointer" }}>회원가입</span>
+                </Link>
+              </DropMenu>
+            </>
+          )}
         </DropDiv>
       </Container>
     </>

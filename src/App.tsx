@@ -1,6 +1,6 @@
 import React from "react";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import Router from "./Router";
+import Router from "./util/route/Router";
 import { darkTheme } from "./util/theme";
 import "./App.css";
 import { RecoilRoot } from "recoil";

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { createCheckCode, getCheckCode, tokenValidate } from "../util/api";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 const Container = styled.div`
   width: 75%;
   margin-bottom: 15px;
@@ -89,17 +89,20 @@ function Card({ id, name, desc, img, isPrivate, code }: IProps) {
 
   const iconRef = useRef<any>(null);
   const imgRef = useRef<any>(null);
+  const checkCodeRef = useRef<any>(null);
+
+  const today = new Date();
 
   const onCreateCode = async () => {
     const response = await tokenValidate(localStorage.getItem("token"));
     if (response) {
-      const today = new Date();
       const response2 = await getCheckCode(
         today.getMonth() + 1,
         today.getDate(),
         id
       );
-      if (response2.status === 200) {
+      if (response2.data.isValid === true) {
+        //출석코드 이미 생성 && 유효
         const code = response2.data.checkCode;
         navigate("/checkcode", {
           state: {
@@ -132,6 +135,7 @@ function Card({ id, name, desc, img, isPrivate, code }: IProps) {
           console.log(response3);
         }
       } else {
+        //출석코드 마감
         console.log(response2);
       }
     } else {
@@ -163,6 +167,24 @@ function Card({ id, name, desc, img, isPrivate, code }: IProps) {
     imgRef.current.style.display = "none";
     iconRef.current.style.display = "block";
   };
+
+  const checkCodeIsValid = async () => {
+    const response = await getCheckCode(
+      today.getMonth() + 1,
+      today.getDate(),
+      id
+    );
+    console.log(response);
+    if (response.data?.isValid === false) {
+      //출석코드 마감
+      checkCodeRef.current.style.color = "#6a5f5f";
+      checkCodeRef.current.style.cursor = "default";
+      checkCodeRef.current.style.text = "출석 코드 생성하기(마감)";
+    }
+  };
+  useEffect(() => {
+    checkCodeIsValid();
+  }, []);
   return (
     <Container>
       <Bg>
@@ -194,7 +216,9 @@ function Card({ id, name, desc, img, isPrivate, code }: IProps) {
           </span>
         </TitleWrapper>
         <TextWrapper>
-          <Text onClick={onCreateCode}>출석 코드 생성하기</Text>
+          <Text ref={checkCodeRef} onClick={onCreateCode}>
+            출석 코드 생성하기
+          </Text>
           <span>|</span>
           <Text onClick={onEdit}>동아리 설정 변경하기</Text>
         </TextWrapper>
