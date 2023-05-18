@@ -74,6 +74,7 @@ function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
 
   const LinktoAdmin = async () => {
     const response = await tokenValidate(localStorage.getItem("token"));
+    console.log(response);
     if (response) {
       navigate("/admin");
     } else {

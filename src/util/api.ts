@@ -34,6 +34,11 @@ export async function tokenValidate(token: string | null) {
     const response = await axios.get(`${BASE_URL}/auth/check`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("manager");
+      window.location.reload();
+    }
     return response.data;
   } catch (e: any) {
     console.log("error: ", e);
