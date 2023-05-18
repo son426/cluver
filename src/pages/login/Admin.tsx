@@ -167,7 +167,7 @@ function Login() {
                     desc={club.description}
                     img={club.img}
                     isPrivate={club.status == "PRIVATE" ? true : false}
-                    code={club.code}
+                    code={club.club_code}
                   />
                 );
             })}

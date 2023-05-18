@@ -185,7 +185,7 @@ function EditClub() {
               <Input
                 type="text"
                 placeholder="동아리 이름"
-                value={state.name}
+                value={name}
                 onChange={(e) => {
                   setName(e.currentTarget.value);
                 }}
@@ -227,7 +227,7 @@ function EditClub() {
               <Input
                 type="text"
                 placeholder="동아리 코드"
-                value={state.code}
+                value={code}
                 onChange={(e) => {
                   setCode(e.currentTarget.value);
                 }}
@@ -238,7 +238,7 @@ function EditClub() {
                 <Input
                   type="text"
                   placeholder="동아리 프로필 사진"
-                  value={state.img}
+                  value={imgsrc}
                   onChange={(e) => {
                     setImgsrc(e.currentTarget.value);
                   }}
