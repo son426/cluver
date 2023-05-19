@@ -17,7 +17,7 @@ const Container = styled.div`
 `;
 const Bg = styled.div`
   width: 100%;
-  padding: 20px;
+  padding: 18px;
 `;
 const TitleWrapper = styled.div`
   display: flex;
@@ -45,13 +45,14 @@ const Logo = styled.img`
   object-fit: contain;
 `;
 const Title = styled.span`
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   font-family: ${(props) => props.theme.textFont};
   background: ${(props) => props.theme.gradient};
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  margin-bottom: 2px;
 `;
 const Desc = styled.span`
   font-size: 12px;
@@ -217,10 +218,10 @@ function Card({ id, name, desc, img, isPrivate, code }: IProps) {
         </TitleWrapper>
         <TextWrapper>
           <Text ref={checkCodeRef} onClick={onCreateCode}>
-            출석 코드 생성하기
+            출석 코드
           </Text>
           <span>|</span>
-          <Text onClick={onEdit}>동아리 설정 변경하기</Text>
+          <Text onClick={onEdit}>동아리 정보</Text>
         </TextWrapper>
       </Bg>
     </Container>
