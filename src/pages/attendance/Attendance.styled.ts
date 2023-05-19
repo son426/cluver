@@ -209,6 +209,7 @@ export const Section = styled.div`
     background: ${(props) => props.theme.gradient};
     border-radius: 5px;
   }
+  z-index: 0;
 `;
 
 export const MemberDiv = styled.div`
@@ -257,9 +258,10 @@ export const PickDiv = styled.div`
   flex-direction: column;
   position: absolute;
   background: ${(props) => props.theme.bgColor};
-  top: 50%;
+  /* top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); */
+  top: 55%;
 `;
 
 export const PickBtn = styled.div`
@@ -274,6 +276,7 @@ export const PickBtn = styled.div`
   border-radius: 3px;
   cursor: pointer;
   line-height: 13px;
+  font-family: ${(props) => props.theme.textFont};
 `;
 
 export const listDiv = styled.div`
@@ -281,24 +284,83 @@ export const listDiv = styled.div`
   flex-direction: column;
   align-items: center;
   background: ${(props) => props.theme.boxColor};
-  background: #0a0b0ef3;
   position: absolute;
   color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /*   width: 220px;
+  height: 125px; */
+  border: 1px solid white;
+  width: 99%;
+  height: 99%;
+`;
+
+export const ListTitle = styled.div`
+  font-family: ${(props) => props.theme.textFont};
+  font-size: 17px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+`;
+
+export const Underline = styled.div`
+  width: 80%;
+  height: 1px;
+  background: ${(props) => props.theme.gradient};
+  margin: 3px;
+`;
+
+export const attendances = styled.div`
+  margin-top: 25px;
+  height: 70%;
+  width: 80%;
+  padding-bottom: 5px;
+  //border: 1px solid white;
   overflow-y: auto;
   overflow-x: hidden;
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 1px;
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
     background: ${(props) => props.theme.gradient};
     border-radius: 5px;
   }
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 220px;
-  height: 125px;
-  border: 1px solid white;
-  border-radius: 12px;
+`;
+
+export const ListMembers = styled.div`
+  width: 80%;
+  height: 35px;
+  margin: 7px;
+  color: white;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  border-bottom: 0.1px solid lightgrey;
+  margin-left: 8%;
+`;
+
+export const ListMembersText = styled.div`
+  width: 38px;
+  height: 33px;
+  display: inline-block;
+  font-size: 15px;
+  font-family: ${(props) => props.theme.textFont};
+  font-weight: lighter;
+  margin-left: 3px;
+  padding-top: 10px;
+  text-align: center;
+  margin-bottom: 5px;
+  z-index: 1;
+`;
+
+export const ListClose = styled.div`
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  font-family: ${(props) => props.theme.textFont};
+  color: white;
+  cursor: pointer;
+  font-size: 17px;
 `;

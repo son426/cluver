@@ -96,45 +96,46 @@ function Main() {
           </S.SearchBox>
           <S.ResDiv ref={res}>
             <ul>
-              {a?.map((e: any) => {
-                let lock = "lock";
-                if (e.status === "PUBLIC") {
-                  lock = "lock_open_right";
-                }
-                return (
-                  <li key={e.id}>
-                    <S.Res
-                      onClick={() => {
-                        if (e.status === "PUBLIC") {
-                          window.location.href = `/attendance/${e.id}`;
-                        } else {
-                          priv.current.style.opacity = "1";
-                          priv.current.style.zIndex = "10";
-                          setKey(e.club_code);
-                          setId(e.id);
-                        }
-                      }}
-                    >
-                      <S.ResImg>♣</S.ResImg>
-                      <S.ResText>
-                        <S.ResName>{e.name}</S.ResName>
-                        <S.ResAbout>{e.description}</S.ResAbout>
-                      </S.ResText>
-                      <S.ResLock>
-                        <span
-                          className="material-symbols-outlined"
-                          style={{
-                            fontSize: "15px",
-                            fontVariationSettings: "'FILL' 1",
-                          }}
-                        >
-                          {lock}
-                        </span>
-                      </S.ResLock>
-                    </S.Res>
-                  </li>
-                );
-              })}
+              {a &&
+                a?.map((e: any) => {
+                  let lock = "lock";
+                  if (e.status === "PUBLIC") {
+                    lock = "lock_open_right";
+                  }
+                  return (
+                    <li key={e.id}>
+                      <S.Res
+                        onClick={() => {
+                          if (e.status === "PUBLIC") {
+                            window.location.href = `/attendance/${e.id}`;
+                          } else {
+                            priv.current.style.opacity = "1";
+                            priv.current.style.zIndex = "10";
+                            setKey(e.club_code);
+                            setId(e.id);
+                          }
+                        }}
+                      >
+                        <S.ResImg>♣</S.ResImg>
+                        <S.ResText>
+                          <S.ResName>{e.name}</S.ResName>
+                          <S.ResAbout>{e.description}</S.ResAbout>
+                        </S.ResText>
+                        <S.ResLock>
+                          <span
+                            className="material-symbols-outlined"
+                            style={{
+                              fontSize: "15px",
+                              fontVariationSettings: "'FILL' 1",
+                            }}
+                          >
+                            {lock}
+                          </span>
+                        </S.ResLock>
+                      </S.Res>
+                    </li>
+                  );
+                })}
             </ul>
           </S.ResDiv>
           <S.InputDiv ref={priv}>

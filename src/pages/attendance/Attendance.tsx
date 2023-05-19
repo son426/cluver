@@ -49,11 +49,21 @@ function Attendance() {
   const [message, setM] = useState("유효하지 않은 출석 코드입니다.");
   const [message2, setM2] = useState("다시 입력해주세요.");
   const [b, setArr2] = useState(arr);
+  const [on, setOn] = useState(false);
+  const [clubName, setClubName] = useState("");
 
   let N = 0;
 
   const key = "1234";
   const today = moment().format("YYYY-MM-DD");
+
+  useEffect(() => {
+    /* if (on) {
+      or.current[3].style.zIndex = "0";
+    } else {
+      pick.current.style.zIndex = "-3";
+    } */
+  }, [on]);
 
   useEffect(() => {
     if (code !== key) {
@@ -104,7 +114,8 @@ function Attendance() {
     getUsers(m, d);
     setTimeout(() => {
       pick.current.style.opacity = "1";
-      pick.current.style.zIndex = "3";
+      pick.current.style.zIndex = "1";
+      setOn(true);
     }, 100);
   }, [date]);
 
@@ -120,7 +131,8 @@ function Attendance() {
       //const url = "http://172.20.10.4:8000/club/" + params.userID;
       const response = await axios.get(url);
       resAPI = response.data;
-      //console.log(resAPI);
+      console.log(resAPI);
+      setClubName(resAPI.name);
       setArr(resAPI.users);
       if (resAPI.users) {
         setF(1);
@@ -135,9 +147,10 @@ function Attendance() {
   useEffect(() => {
     Api();
     setArr(resAPI.users);
+    setClubName(resAPI.name);
     if (a.length > 0) {
       a.forEach((e) => {
-        //console.log(e.attendances);
+        console.log(e.attendances);
       });
     } else {
       console.log("yet");
@@ -317,8 +330,10 @@ function Attendance() {
                 or.current[0].style.color = "#89EC84";
                 or.current[1].style.color = "white";
                 or.current[2].style.opacity = "1";
+                or.current[2].style.zIndex = "2";
                 or.current[3].style.opacity = "0";
                 or.current[4].style.zIndex = "-1";
+                //fake.current.style.zIndex = "-2";
               }}
             >
               명단으로 보기
@@ -333,6 +348,9 @@ function Attendance() {
                 or.current[0].style.color = "white";
                 or.current[3].style.opacity = "1";
                 or.current[2].style.opacity = "0";
+                or.current[2].style.zIndex = "-2";
+                //fake.current.style.zIndex = "1";
+                setOn(true);
               }}
             >
               캘린더로 보기
@@ -342,165 +360,166 @@ function Attendance() {
             ref={(e) => {
               or.current[2] = e;
             }}
-            style={{ opacity: "1" }}
+            style={{ opacity: "1", zIndex: "3" }}
           >
             <ul>
-              {a?.map((e: any) => {
-                N = 0;
-                let div = 1;
-                let ct = 0;
-                let per = Math.round((ct / e.attendances.length) * 100);
-                let navDiv = [] as any;
-                navDiv[`${e.id}`] = 0;
-                return (
-                  <li key={e.index}>
-                    <S.MemberDiv>
-                      <S.MemberText
-                        style={{
-                          marginLeft: "7px",
-                          width: "50px",
-                        }}
-                      >
-                        {e.user_name}
-                      </S.MemberText>
-                      <S.MemberText style={{ marginRight: "5px" }}>
-                        {e.code}
-                      </S.MemberText>
-                      <S.MemberText
-                        style={{
-                          width: "21px",
-                          zIndex: "3",
-                        }}
-                      >
-                        <span
-                          className="material-symbols-outlined"
+              {a &&
+                a?.map((e: any) => {
+                  N = 0;
+                  let div = 1;
+                  let ct = 0;
+                  let per = Math.round((ct / e.attendances.length) * 100);
+                  let navDiv = [] as any;
+                  navDiv[`${e.id}`] = 0;
+                  return (
+                    <li key={e.index}>
+                      <S.MemberDiv>
+                        <S.MemberText
                           style={{
-                            fontSize: "22px",
-                            lineHeight: "12px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => {
-                            if (navDiv[`${e.id}`] > 0) {
-                              navDiv[`${e.id}`] -= 1;
-                            }
-                            //console.log(navDiv[`${e.id}`]);
-                            let how = navDiv[`${e.id}`] * 83.2;
-                            clovers.current[
-                              `${e.id}`
-                            ].style.transform = `translateX(-${how}px)`;
+                            marginLeft: "7px",
+                            width: "50px",
                           }}
                         >
-                          navigate_before
-                        </span>
-                      </S.MemberText>
-                      <S.MemberText
-                        style={{
-                          width: "81.5px",
-                          marginLeft: "0",
-                          color: "grey",
-                          fontFamily: "copperplate",
-                          fontSize: "17px",
-                          paddingTop: "7px",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <div
-                          ref={(ele) => {
-                            clovers.current[`${e.id}`] = ele;
+                          {e.user_name}
+                        </S.MemberText>
+                        <S.MemberText style={{ marginRight: "5px" }}>
+                          {e.code}
+                        </S.MemberText>
+                        <S.MemberText
+                          style={{
+                            width: "21px",
+                            zIndex: "3",
                           }}
-                          style={{ width: "fit-content" }}
                         >
-                          {e.attendances?.map((i: any) => {
-                            N += 1;
-                            div = N / 5;
-                            /* if (N % 5 !== 0) {
+                          <span
+                            className="material-symbols-outlined"
+                            style={{
+                              fontSize: "22px",
+                              lineHeight: "12px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => {
+                              if (navDiv[`${e.id}`] > 0) {
+                                navDiv[`${e.id}`] -= 1;
+                              }
+                              //console.log(navDiv[`${e.id}`]);
+                              let how = navDiv[`${e.id}`] * 83.2;
+                              clovers.current[
+                                `${e.id}`
+                              ].style.transform = `translateX(-${how}px)`;
+                            }}
+                          >
+                            navigate_before
+                          </span>
+                        </S.MemberText>
+                        <S.MemberText
+                          style={{
+                            width: "81.5px",
+                            marginLeft: "0",
+                            color: "grey",
+                            fontFamily: "copperplate",
+                            fontSize: "17px",
+                            paddingTop: "7px",
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            ref={(ele) => {
+                              clovers.current[`${e.id}`] = ele;
+                            }}
+                            style={{ width: "fit-content" }}
+                          >
+                            {e.attendances?.map((i: any) => {
+                              N += 1;
+                              div = N / 5;
+                              /* if (N % 5 !== 0) {
                               div += 1;
                             } */
-                            if (i.isChecked === true) {
-                              ct++;
-                              per = Math.round(
-                                (ct / e.attendances.length) * 100
-                              );
-                              return (
-                                <span
-                                  style={{
-                                    cursor: "pointer",
-                                    marginRight: "5px",
-                                    color: "#9ee69a",
-                                  }}
-                                  onClick={() => {
-                                    alert(`${i.club_attendance.date}`);
-                                  }}
-                                >
-                                  ♣
-                                </span>
-                              );
-                            } else {
-                              per = Math.round(
-                                (ct / e.attendances.length) * 100
-                              );
-                              return (
-                                <span
-                                  style={{
-                                    cursor: "pointer",
-                                    marginRight: "5px",
-                                    color: "grey",
-                                  }}
-                                  onClick={() => {
-                                    alert(`${i.club_attendance.date}`);
-                                  }}
-                                >
-                                  ♣
-                                </span>
-                              );
-                            }
-                          })}
-                        </div>
-                      </S.MemberText>
-                      <S.MemberText
-                        style={{
-                          width: "18px",
-                          marginLeft: "0",
-                          marginRight: "10px",
-                        }}
-                      >
-                        <span
-                          className="material-symbols-outlined"
+                              if (i.isChecked === true) {
+                                ct++;
+                                per = Math.round(
+                                  (ct / e.attendances.length) * 100
+                                );
+                                return (
+                                  <span
+                                    style={{
+                                      cursor: "pointer",
+                                      marginRight: "5px",
+                                      color: "#9ee69a",
+                                    }}
+                                    onClick={() => {
+                                      alert(`${i.club_attendance.date}`);
+                                    }}
+                                  >
+                                    ♣
+                                  </span>
+                                );
+                              } else {
+                                per = Math.round(
+                                  (ct / e.attendances.length) * 100
+                                );
+                                return (
+                                  <span
+                                    style={{
+                                      cursor: "pointer",
+                                      marginRight: "5px",
+                                      color: "grey",
+                                    }}
+                                    onClick={() => {
+                                      alert(`${i.club_attendance.date}`);
+                                    }}
+                                  >
+                                    ♣
+                                  </span>
+                                );
+                              }
+                            })}
+                          </div>
+                        </S.MemberText>
+                        <S.MemberText
                           style={{
-                            fontSize: "22px",
-                            lineHeight: "12px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => {
-                            if (navDiv[`${e.id}`] < div - 1) {
-                              navDiv[`${e.id}`] += 1;
-                            }
-                            //console.log(navDiv[`${e.id}`]);
-                            let how = navDiv[`${e.id}`] * 83.2;
-                            clovers.current[
-                              `${e.id}`
-                            ].style.transform = `translateX(-${how}px)`;
+                            width: "18px",
+                            marginLeft: "0",
+                            marginRight: "10px",
                           }}
                         >
-                          navigate_next
-                        </span>
-                      </S.MemberText>
-                      <S.MemberText style={{ width: "50px" }}>
-                        <S.BarArea>
-                          <S.Bar
+                          <span
+                            className="material-symbols-outlined"
                             style={{
-                              width: `${per}%`,
+                              fontSize: "22px",
+                              lineHeight: "12px",
+                              cursor: "pointer",
                             }}
-                          ></S.Bar>
-                        </S.BarArea>
-                      </S.MemberText>
-                      <S.MemberText style={{ textAlign: "right" }}>
-                        {per} %
-                      </S.MemberText>
-                    </S.MemberDiv>
-                  </li>
-                );
-              })}
+                            onClick={() => {
+                              if (navDiv[`${e.id}`] < div - 1) {
+                                navDiv[`${e.id}`] += 1;
+                              }
+                              //console.log(navDiv[`${e.id}`]);
+                              let how = navDiv[`${e.id}`] * 83.2;
+                              clovers.current[
+                                `${e.id}`
+                              ].style.transform = `translateX(-${how}px)`;
+                            }}
+                          >
+                            navigate_next
+                          </span>
+                        </S.MemberText>
+                        <S.MemberText style={{ width: "50px" }}>
+                          <S.BarArea>
+                            <S.Bar
+                              style={{
+                                width: `${per}%`,
+                              }}
+                            ></S.Bar>
+                          </S.BarArea>
+                        </S.MemberText>
+                        <S.MemberText style={{ textAlign: "right" }}>
+                          {per} %
+                        </S.MemberText>
+                      </S.MemberDiv>
+                    </li>
+                  );
+                })}
             </ul>
           </S.Section>
           <S.Section
@@ -508,6 +527,12 @@ function Attendance() {
               or.current[3] = e;
             }}
             style={{ opacity: "0", zIndex: "0" }}
+            onClick={() => {
+              if (on) {
+                pick.current.style.zIndex = "-3";
+                setOn(false);
+              }
+            }}
           >
             <Calendar
               className="react-calendar"
@@ -520,48 +545,48 @@ function Attendance() {
               onChange={setDate}
               value={date}
             ></Calendar>
-            <S.PickDiv ref={pick}>
-              <S.InputText style={{ margin: "20px auto 0" }}>
-                {fmDate}
-              </S.InputText>
-              <S.InputText
-                style={{
-                  marginTop: "10px",
-                  marginLeft: "53px",
-                  marginBottom: "0",
-                }}
-              >
-                활동 내용 : {act}
-              </S.InputText>
-              <S.InputText
-                style={{
-                  marginTop: "7px",
-                  marginLeft: "53px",
-                }}
-              >
-                출석 인원 : {num}{" "}
-                <S.PickBtn
-                  onClick={() => {
-                    or.current[4].style.opacity = "1";
-                    or.current[4].style.zIndex = "3";
-                  }}
-                >
-                  출석부
-                </S.PickBtn>
-              </S.InputText>
-              <S.InputText
-                style={{
-                  margin: "2px auto",
-                }}
-                onClick={() => {
-                  pick.current.style.opacity = "0";
-                  pick.current.style.zIndex = "-3";
-                }}
-              >
-                <S.PickBtn style={{ marginLeft: "0" }}>닫기</S.PickBtn>
-              </S.InputText>
-            </S.PickDiv>
           </S.Section>
+          <S.PickDiv ref={pick} style={{ zIndex: "-3" }}>
+            <S.InputText style={{ margin: "20px auto 0" }}>
+              {fmDate}
+            </S.InputText>
+            <S.InputText
+              style={{
+                marginTop: "10px",
+                marginLeft: "53px",
+                marginBottom: "0",
+              }}
+            >
+              활동 내용 : {act}
+            </S.InputText>
+            <S.InputText
+              style={{
+                marginTop: "7px",
+                marginLeft: "53px",
+              }}
+            >
+              출석 인원 : {num}{" "}
+              <S.PickBtn
+                onClick={() => {
+                  or.current[4].style.opacity = "1";
+                  or.current[4].style.zIndex = "3";
+                }}
+              >
+                출석부
+              </S.PickBtn>
+            </S.InputText>
+            <S.InputText
+              style={{
+                margin: "2px auto",
+              }}
+              onClick={() => {
+                pick.current.style.opacity = "0";
+                pick.current.style.zIndex = "-3";
+              }}
+            >
+              <S.PickBtn style={{ marginLeft: "0" }}>닫기</S.PickBtn>
+            </S.InputText>
+          </S.PickDiv>
           <S.Section
             ref={(e) => {
               or.current[4] = e;
@@ -574,37 +599,60 @@ function Attendance() {
                 zIndex: "-1",
               }} */
             >
-              <ul>
-                {b &&
-                  b?.map((e: any) => {
-                    return (
-                      <li key={e.index}>
-                        <S.MemberDiv>
-                          <S.MemberText
-                            style={{
-                              marginLeft: "7px",
-                              width: "50px",
-                            }}
-                          >
-                            {e.username}
-                          </S.MemberText>
-                          <S.MemberText style={{ marginRight: "5px" }}>
-                            {e.usercode}
-                          </S.MemberText>
-                        </S.MemberDiv>
-                      </li>
-                    );
-                  })}
-              </ul>
-              <S.PickBtn
-                style={{ margin: "10px", marginBottom: "20px" }}
+              <S.ListTitle>
+                {moment(date).format("M월 D일")} {clubName} 출석부
+              </S.ListTitle>
+              <S.Underline></S.Underline>
+              <S.ListClose
                 onClick={() => {
                   or.current[4].style.opacity = "0";
                   or.current[4].style.zIndex = "-1";
                 }}
               >
-                닫기
-              </S.PickBtn>
+                X
+              </S.ListClose>
+              <S.attendances>
+                <ul>
+                  {b &&
+                    b?.map((e: any) => {
+                      let text = "결석";
+                      if (e.isChecked) {
+                        text = "출석";
+                      }
+                      return (
+                        <li key={e.index}>
+                          <S.ListMembers>
+                            <S.ListMembersText
+                              style={{
+                                marginLeft: "15px",
+                                marginRight: "15px",
+                                width: "50px",
+                              }}
+                            >
+                              {e.name}
+                            </S.ListMembersText>
+                            <S.ListMembersText style={{ marginRight: "30px" }}>
+                              {e.code}
+                            </S.ListMembersText>
+                            {text === "출석" ? (
+                              <S.ListMembersText
+                                style={{ marginRight: "0px", color: "#89EC84" }}
+                              >
+                                {text}
+                              </S.ListMembersText>
+                            ) : (
+                              <S.ListMembersText
+                                style={{ marginRight: "0px", color: "#e34848" }}
+                              >
+                                {text}
+                              </S.ListMembersText>
+                            )}
+                          </S.ListMembers>
+                        </li>
+                      );
+                    })}
+                </ul>
+              </S.attendances>
             </S.listDiv>
           </S.Section>
           <Bottombar
