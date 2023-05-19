@@ -36,13 +36,14 @@ const Icon = styled.div`
   text-align: center;
 `;
 const Title = styled.span`
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   font-family: ${(props) => props.theme.textFont};
   background: ${(props) => props.theme.gradient};
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  margin-bottom: 2px;
 `;
 const Desc = styled.span`
   font-size: 12px;

@@ -63,6 +63,8 @@ const Text = styled.div`
   color: ${(props) => props.theme.iconColor};
   margin-bottom: 20px;
   font-size: 13px;
+  font-family: ${(props) => props.theme.textFont};
+  font-weight: lighter;
   :hover {
     color: ${(props) => props.theme.accentColor};
     transition: all ease 0.3s;
@@ -165,7 +167,16 @@ function CheckCode() {
             isPrivate={state.isPrivate}
             chosen={false}
           />
-          <TextWrapper style={{ position: "absolute", bottom: "20px" }}>
+          <TextWrapper style={{ marginTop: "10px" }}>
+            <Text
+              onClick={() => {
+                window.location.href = `/attendance/${state.id}`;
+              }}
+            >
+              출석 명단 확인
+            </Text>
+          </TextWrapper>
+          <TextWrapper style={{ position: "absolute", bottom: "10px" }}>
             <Text
               onClick={() => {
                 modalRef.current.style.display = "flex";
