@@ -123,6 +123,36 @@ export async function createClub(
   }
 }
 
+export async function editClub(
+  id: number,
+  name: string,
+  desc: string,
+  isPrivate: boolean,
+  code: string,
+  img: string,
+  token: string | null
+) {
+  try {
+    const response = await axios.patch(
+      `${BASE_URL}/club/${id}`,
+      {
+        name: name,
+        img: img,
+        description: desc,
+        is_public: !isPrivate,
+        club_code: code,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
 export async function deleteClub(id: number, token: string | null) {
   try {
     const response = await axios.delete(`${BASE_URL}/club/${id}`, {
@@ -214,5 +244,65 @@ export async function getCalendar(month: string, day: string, clubId: number) {
   } catch (e: any) {
     console.log("error: ", e);
     return false;
+  }
+}
+
+export async function checkEmailDuplicate(email: string) {
+  try {
+    const response = await axios.post(`${BASE_URL}/email/duplicate-check`, {
+      email: email,
+    });
+    console.log(response);
+    return response.data.isExisting;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
+export async function sendCheckEmail(email: string) {
+  try {
+    const response = await axios.post(`${BASE_URL}/email/send`, {
+      email: email,
+    });
+    console.log(response);
+    return response;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
+export async function emailValidation(email: string) {
+  try {
+    const response = await axios.post(`${BASE_URL}/email/check`, {
+      email: email,
+    });
+    console.log(response);
+    return response;
+  } catch (e: any) {
+    console.log(e);
+    return e.response.data.message;
+  }
+}
+
+export async function signUp(
+  id: string,
+  email: string,
+  name: string,
+  password: string
+) {
+  try {
+    const response = await axios.post(`${BASE_URL}/auth/signup`, {
+      id: id,
+      email: email,
+      name: name,
+      password: password,
+    });
+    console.log(response);
+    return response;
+  } catch (e: any) {
+    return e.response.data.message;
+    console.log(e);
   }
 }
