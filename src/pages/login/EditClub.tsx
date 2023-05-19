@@ -3,7 +3,7 @@ import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { createClub } from "../../util/api";
+import { editClub } from "../../util/api";
 
 const Background = styled.div`
   width: 100vw;
@@ -108,6 +108,7 @@ const Error = styled.span`
   color: #d23535;
   display: none;
   margin-bottom: 5px;
+  font-family: ${(props) => props.theme.textFont};
 `;
 
 interface IRouterState {
@@ -142,7 +143,8 @@ function EditClub() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (name !== "" && desc !== "" && (!isPrivate || code !== "")) {
-      const response = await createClub(
+      const response = await editClub(
+        state.id,
         name,
         desc,
         isPrivate,
@@ -150,7 +152,7 @@ function EditClub() {
         imgsrc,
         localStorage.getItem("token")
       );
-      if (response.status === 201) {
+      if (response.status === 200) {
         navigate("/admin");
       } else {
         console.log("error: ", response);

@@ -105,6 +105,7 @@ const Error = styled.span`
   color: #d23535;
   display: none;
   margin-bottom: 5px;
+  font-family: ${(props) => props.theme.textFont};
 `;
 
 function Login() {
