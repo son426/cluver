@@ -81,11 +81,22 @@ function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
       navigate("/login");
     }
   };
+
+  const LinktoAttendance = async () => {
+    const response = await tokenValidate(localStorage.getItem("token"));
+    console.log(response);
+    if (response) {
+      navigate("/checkattendance");
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <>
       <Container>
         <IconDiv>
-          <Icon isActive={first}>
+          {/* <Icon isActive={first}>
             <Link to="/">
               <span
                 className="material-symbols-outlined"
@@ -99,6 +110,19 @@ function Bottombar({ first, second, third, fourth, fifth }: IBarProps) {
                 how_to_reg
               </span>
             </Link>
+          </Icon> */}
+          <Icon isActive={first} onClick={LinktoAttendance}>
+            <span
+              className="material-symbols-outlined"
+              style={{
+                fontSize: "32px",
+                lineHeight: "140%",
+                paddingLeft: "2px",
+                fontVariationSettings: "'FILL' 1",
+              }}
+            >
+              how_to_reg
+            </span>
           </Icon>
           <Icon isActive={second}>
             <span
