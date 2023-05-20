@@ -9,6 +9,7 @@ import Signup from "../../pages/login/Signup";
 import AddClub from "../../pages/login/AddClub";
 import EditClub from "../../pages/login/EditClub";
 import PrivateRoute from "./PrivateRouter";
+import CheckAttendance from "../../pages/login/CheckAttendance";
 
 function Router() {
   return (
@@ -31,6 +32,7 @@ function Router() {
           <Route path="/delete" element={<Delete />} />
           <Route path="/checkcode" element={<CheckCode />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/checkattendance" element={<CheckAttendance />} />
         </Route>
       </Routes>
     </BrowserRouter>
