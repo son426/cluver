@@ -52,7 +52,7 @@ const Title = styled.span`
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 `;
 const Desc = styled.span`
   font-size: 12px;
@@ -67,7 +67,7 @@ const TextWrapper = styled.div`
   justify-content: space-around;
   & {
     color: ${(props) => props.theme.iconColor};
-    font-size: 10px;
+    font-size: 11px;
   }
 `;
 const Text = styled.div`
@@ -116,28 +116,41 @@ function Card({ id, name, desc, img, isPrivate, code }: IProps) {
         });
       } else if (response2.status === 201) {
         //출석코드 생성 안 됨
-        const response3 = await createCheckCode(
-          today.getMonth() + 1,
-          today.getDate(),
-          id
-        );
-        if (response3.status === 201) {
-          const code = response3.data.checkCode;
-          navigate("/checkcode", {
-            state: {
-              id: id,
-              name: name,
-              desc: desc,
-              isPrivate: isPrivate,
-              checkCode: code,
-            },
-          });
-        } else {
-          console.log(response3);
+        const ch = window.confirm("출석 코드를 생성하시겠습니까?");
+        if (ch) {
+          const response3 = await createCheckCode(
+            today.getMonth() + 1,
+            today.getDate(),
+            id
+          );
+          if (response3.status === 201) {
+            const code = response3.data.checkCode;
+            navigate("/checkcode", {
+              state: {
+                id: id,
+                name: name,
+                desc: desc,
+                isPrivate: isPrivate,
+                checkCode: code,
+              },
+            });
+          } else {
+            console.log(response3);
+          }
         }
       } else {
         //출석코드 마감
         console.log(response2);
+        const code = response2.data.checkCode;
+        navigate("/checkcode", {
+          state: {
+            id: id,
+            name: name,
+            desc: desc,
+            isPrivate: isPrivate,
+            checkCode: code,
+          },
+        });
       }
     } else {
       navigate("/login");
@@ -178,9 +191,9 @@ function Card({ id, name, desc, img, isPrivate, code }: IProps) {
     console.log(response);
     if (response.data?.isValid === false) {
       //출석코드 마감
-      checkCodeRef.current.style.color = "#6a5f5f";
-      checkCodeRef.current.style.cursor = "default";
-      checkCodeRef.current.style.text = "출석 코드 생성하기(마감)";
+      //checkCodeRef.current.style.color = "#6a5f5f";
+      //checkCodeRef.current.style.cursor = "default";
+      //checkCodeRef.current.style.text = "출석 코드 생성하기(마감)";
     }
   };
   useEffect(() => {
@@ -218,7 +231,7 @@ function Card({ id, name, desc, img, isPrivate, code }: IProps) {
         </TitleWrapper>
         <TextWrapper>
           <Text ref={checkCodeRef} onClick={onCreateCode}>
-            출석 코드
+            오늘의 출석 코드
           </Text>
           <span>|</span>
           <Text onClick={onEdit}>동아리 정보</Text>

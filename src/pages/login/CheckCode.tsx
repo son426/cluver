@@ -3,8 +3,8 @@ import Navbar from "../../components/Navbar";
 import Bottombar from "../../components/Bottombar";
 import SimpleCard from "../../components/SimpleCard";
 import { useLocation, useNavigate } from "react-router";
-import { endCheck } from "../../util/api";
-import { useRef } from "react";
+import { endCheck, codeCheck } from "../../util/api";
+import { useRef, useState, useEffect } from "react";
 
 const Background = styled.div`
   width: 100vw;
@@ -30,13 +30,14 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-bottom: 30px;
 `;
 const Title = styled.span`
   font-size: 20px;
   font-weight: 400;
   font-family: ${(props) => props.theme.textFont};
   color: ${(props) => props.theme.iconColor};
-  margin: 15px auto;
+  margin: 10px auto;
 `;
 const CodeText = styled.span`
   font-size: 40px;
@@ -62,7 +63,7 @@ const TextWrapper = styled.div`
 const Text = styled.div`
   color: ${(props) => props.theme.iconColor};
   margin-bottom: 20px;
-  font-size: 13px;
+  font-size: 14px;
   font-family: ${(props) => props.theme.textFont};
   font-weight: lighter;
   :hover {
@@ -70,6 +71,7 @@ const Text = styled.div`
     transition: all ease 0.3s;
     cursor: pointer;
   }
+  border-radius: 7px;
 `;
 const ModalBg = styled.div`
   display: none; //flex
@@ -113,6 +115,9 @@ function CheckCode() {
   const navigate = useNavigate();
   const modalRef = useRef<any>(null);
   const { state } = useLocation() as IRouterState;
+  const [status, setStatus] = useState("(진행 중)");
+  const [message, setM] = useState("출석 마감하기");
+  const btn = useRef<any>(null);
   let today = new Date();
   let year = today.getFullYear();
   let month = ("0" + (today.getMonth() + 1)).slice(-2);
@@ -133,6 +138,28 @@ function CheckCode() {
     }
   };
 
+  const codeIsValid = async () => {
+    const today = new Date();
+    const response = await codeCheck(
+      String(today.getMonth() + 1),
+      String(today.getDate()),
+      state.id,
+      state.checkCode
+    );
+    console.log(response);
+    if (response === "출석체크 이미 끝났음") {
+      setStatus("(마감)");
+      setM("출석 진행하기");
+    } else if (response === "출석 성공") {
+      setStatus("(진행 중)");
+      setM("출석 마감하기");
+    }
+  };
+
+  useEffect(() => {
+    codeIsValid();
+  }, []);
+
   //뒤로가기 막기 / 뒤로가기 하면 자동 출석마감
 
   return (
@@ -144,9 +171,12 @@ function CheckCode() {
             <Modal>
               <Text>출석을 마감하시겠습니까?</Text>
               <TextWrapper>
-                <SmallText onClick={onEndCheck}>마감하기</SmallText>
+                <SmallText style={{ cursor: "pointer" }} onClick={onEndCheck}>
+                  마감하기
+                </SmallText>
                 <span>|</span>
                 <SmallText
+                  style={{ cursor: "pointer" }}
                   onClick={() => {
                     modalRef.current.style.display = "none";
                   }}
@@ -159,7 +189,7 @@ function CheckCode() {
           <Title>
             {year}-{month}-{day}
           </Title>
-          <Title>출석 코드</Title>
+          <Title>출석 코드 {status}</Title>
           <CodeText>{state.checkCode}</CodeText>
           <SimpleCard
             name={state.name}
@@ -167,10 +197,26 @@ function CheckCode() {
             isPrivate={state.isPrivate}
             chosen={false}
           />
-          <TextWrapper style={{ marginTop: "10px" }}>
+          <TextWrapper style={{ marginTop: "20px" }}>
             <Text
+              ref={btn}
+              style={{
+                fontSize: "14px",
+                border: "1px solid white",
+                padding: "7px 15px",
+                cursor: "pointer",
+              }}
               onClick={() => {
                 window.location.href = `/attendance/${state.id}`;
+              }}
+              onMouseEnter={() => {
+                btn.current.style.color = "#1C1F2A";
+                btn.current.style.background = "white";
+              }}
+              onMouseLeave={() => {
+                btn.current.style.color = "white";
+                btn.current.style.fontWeight = "lighter";
+                btn.current.style.background = "#1C1F2A";
               }}
             >
               출석 명단 확인
@@ -182,7 +228,7 @@ function CheckCode() {
                 modalRef.current.style.display = "flex";
               }}
             >
-              출석 마감하기
+              {message}
             </Text>
           </TextWrapper>
         </Container>
