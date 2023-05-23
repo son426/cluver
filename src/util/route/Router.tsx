@@ -10,6 +10,7 @@ import AddClub from "../../pages/login/AddClub";
 import EditClub from "../../pages/login/EditClub";
 import PrivateRoute from "./PrivateRouter";
 import CheckAttendance from "../../pages/login/CheckAttendance";
+import Anonymous from "../../pages/anonymous/Anonymous";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
         {/* 로그인 여부 상관X */}
         <Route index path="/" element={<Main />} />
         <Route index path="/attendance/:clubID" element={<Attendance />} />
+        <Route index path="/anonymous/:clubID" element={<Anonymous />} />
 
         {/* 로그아웃 시 접속 가능한 페이지 */}
         <Route element={<PrivateRoute authentication={false} />}>
