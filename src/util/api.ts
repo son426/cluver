@@ -247,6 +247,31 @@ export async function getCalendar(month: string, day: string, clubId: number) {
   }
 }
 
+export async function postRead(clubId: number) {
+  try {
+    const response = await axios.post(`${BASE_URL}/post/read`, {
+      clubId: clubId,
+    });
+    return response.data;
+  } catch (e: any) {
+    console.log("error: ", e);
+    return false;
+  }
+}
+
+export async function postWrite(clubId: number,content:string) {
+  try {
+    const response = await axios.post(`${BASE_URL}/post/write`, {
+      clubId: clubId,
+      content: content,
+    });
+    return response.data;
+  } catch (e: any) {
+    console.log("error: ", e);
+    return false;
+   }
+}
+
 export async function checkEmailDuplicate(email: string) {
   try {
     const response = await axios.post(`${BASE_URL}/email/duplicate-check`, {
