@@ -259,7 +259,7 @@ export async function postRead(clubId: number) {
   }
 }
 
-export async function postWrite(clubId: number,content:string) {
+export async function postWrite(clubId: number, content: string) {
   try {
     const response = await axios.post(`${BASE_URL}/post/write`, {
       clubId: clubId,
@@ -269,7 +269,7 @@ export async function postWrite(clubId: number,content:string) {
   } catch (e: any) {
     console.log("error: ", e);
     return false;
-   }
+  }
 }
 
 export async function checkEmailDuplicate(email: string) {
@@ -328,6 +328,5 @@ export async function signUp(
     return response;
   } catch (e: any) {
     return e.response.data.message;
-    console.log(e);
   }
 }
