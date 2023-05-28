@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const BASE_URL = `http://34.64.184.11:8000`;
+export const BASE_URL = `http://cluver.kr:8000`;
 
 export async function loginValidate(id: string, password: string) {
   try {
@@ -13,8 +13,8 @@ export async function loginValidate(id: string, password: string) {
     localStorage.setItem("token", token);
     return response;
   } catch (e: any) {
-    return e.response.data.message;
     console.log(e);
+    return e.response.data.message;
   }
 }
 export async function getClubs(token: string | null) {
@@ -327,6 +327,24 @@ export async function signUp(
     console.log(response);
     return response;
   } catch (e: any) {
+    return e.response.data.message;
+  }
+}
+
+export async function restartCheckCode(
+  month: number,
+  day: number,
+  clubId: number
+) {
+  try {
+    const response = await axios.post(`${BASE_URL}/club-attendance/restart`, {
+      date: month + "월" + day + "일",
+      clubId: clubId,
+      activity: "정기회합",
+    });
+    return response;
+  } catch (e: any) {
+    console.log(e);
     return e.response.data.message;
   }
 }
